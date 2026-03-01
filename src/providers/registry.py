@@ -63,6 +63,7 @@ class ProviderRegistry:
                     isinstance(attr, type)
                     and issubclass(attr, BaseProvider)
                     and attr is not BaseProvider
+                    and getattr(attr, "__module__", "") == f"src.providers.{module_name}"
                 ):
                     try:
                         meta = attr.meta()
