@@ -1,0 +1,20 @@
+{% if detail.stats and detail.stats.security %}
+{% set sec = detail.stats.security %}
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Unwanted Queries</span>
+        <span class="detail-stat__value{% if sec.unwanted_queries > 0 %} arr-stat__value--warn{% endif %}">{{ sec.unwanted_queries }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Unwanted Replies</span>
+        <span class="detail-stat__value{% if sec.unwanted_replies > 0 %} arr-stat__value--warn{% endif %}">{{ sec.unwanted_replies }}</span>
+    </div>
+</div>
+{% if sec.unwanted_replies > 0 %}
+<div class="unbound-security-warn">
+    Unsolicited replies detected — possible DNS spoofing attempt.
+</div>
+{% endif %}
+{% else %}
+<p class="detail-empty">No security data available</p>
+{% endif %}

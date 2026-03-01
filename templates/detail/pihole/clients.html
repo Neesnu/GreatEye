@@ -1,0 +1,17 @@
+{% if detail.top_clients %}
+<table class="arr-table">
+    <thead>
+        <tr><th>Client</th><th>Queries</th></tr>
+    </thead>
+    <tbody>
+        {% for c in detail.top_clients %}
+        <tr>
+            <td>{{ c.name | default(c.ip | default('—')) }}</td>
+            <td>{{ c.count | default(0) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No client data</p>
+{% endif %}

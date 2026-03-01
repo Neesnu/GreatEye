@@ -1,0 +1,58 @@
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+    {% set s = instance.summary %}
+    <div class="arr-stats">
+        <div class="arr-stat">
+            <span class="arr-stat__value arr-stat__value--ok">{{ s.containers.running }}</span>
+            <span class="arr-stat__label">Running</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.containers.total }}</span>
+            <span class="arr-stat__label">Total</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value{% if s.containers.unhealthy > 0 %} arr-stat__value--warn{% endif %}">{{ s.containers.unhealthy }}</span>
+            <span class="arr-stat__label">Unhealthy</span>
+        </div>
+    </div>
+
+    {% if s.container_list %}
+    <div class="docker-containers">
+        {% for c in s.container_list[:8] %}
+        <div class="docker-container">
+            <span class="docker-container__dot docker-container__dot--{{ c.state }}"></span>
+            <span class="docker-container__name" title="{{ c.name }}">{{ c.name | truncate(20) }}</span>
+            {% if c.health %}
+            <span class="docker-health-badge docker-health-badge--{{ c.health }}">{{ c.health }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% if s.container_list | length > 8 %}
+        <div class="docker-container docker-container--more">
+            +{{ s.container_list | length - 8 }} more
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    {% if s.system %}
+    <div class="card__metric">
+        <span class="card__metric-label">Host</span>
+        <span class="card__metric-value">{{ s.system.cpus }} CPU · {{ s.system.memory_total_formatted }}</span>
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ instance.type_display_name }}</span>
+</div>

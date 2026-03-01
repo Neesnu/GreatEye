@@ -1,0 +1,68 @@
+<h2>System Settings</h2>
+<p class="admin-subtitle">System overview and configuration.</p>
+
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__value">{{ stats.users }}</div>
+        <div class="admin-stat-card__label">Users</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__value">{{ stats.instances }}</div>
+        <div class="admin-stat-card__label">Provider Instances</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__value">{{ stats.provider_types }}</div>
+        <div class="admin-stat-card__label">Provider Types</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__value">{{ stats.roles }}</div>
+        <div class="admin-stat-card__label">Roles</div>
+    </div>
+    <div class="admin-stat-card">
+        <div class="admin-stat-card__value">{{ stats.permissions }}</div>
+        <div class="admin-stat-card__label">Permissions</div>
+    </div>
+</div>
+
+<div class="admin-section">
+    <h3 class="admin-section-title">Security</h3>
+    <div class="admin-info-row">
+        <span class="admin-info-row__label">SECRET_KEY</span>
+        <span class="admin-info-row__value">
+            <span class="badge badge--up">Configured</span>
+        </span>
+    </div>
+</div>
+
+<div class="admin-section">
+    <h3 class="admin-section-title">Quick Links</h3>
+    <div class="admin-link-grid">
+        <a class="btn" hx-get="/admin/providers" hx-target="#main-content" hx-push-url="true">
+            Manage Providers
+        </a>
+        <a class="btn" hx-get="/admin/users" hx-target="#main-content" hx-push-url="true">
+            Manage Users
+        </a>
+        <a class="btn" hx-get="/admin/roles" hx-target="#main-content" hx-push-url="true">
+            Manage Roles
+        </a>
+        <a class="btn" hx-get="/admin/plex-users" hx-target="#main-content" hx-push-url="true">
+            Plex Users
+        </a>
+        <a class="btn" hx-get="/admin/resets" hx-target="#main-content" hx-push-url="true">
+            Password Resets
+        </a>
+    </div>
+</div>
+
+<div class="admin-section">
+    <h3 class="admin-section-title">About</h3>
+    <div class="admin-info-row">
+        <span class="admin-info-row__label">Application</span>
+        <span class="admin-info-row__value">Great Eye v1.0</span>
+    </div>
+    <div class="admin-info-row">
+        <span class="admin-info-row__label">Stack</span>
+        <span class="admin-info-row__value">FastAPI + HTMX + SQLite</span>
+    </div>
+</div>

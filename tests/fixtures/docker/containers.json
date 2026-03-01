@@ -1,0 +1,55 @@
+[
+    {
+        "Id": "abc123def456789012345678901234567890123456789012345678901234",
+        "Names": ["/sonarr"],
+        "Image": "lscr.io/linuxserver/sonarr:latest",
+        "State": "running",
+        "Status": "Up 5 days (healthy)",
+        "Created": 1717977600,
+        "Ports": [
+            {"PrivatePort": 8989, "PublicPort": 8989, "Type": "tcp"}
+        ],
+        "Mounts": [
+            {"Type": "bind"},
+            {"Type": "bind"},
+            {"Type": "bind"}
+        ]
+    },
+    {
+        "Id": "def456abc789012345678901234567890123456789012345678901234567",
+        "Names": ["/radarr"],
+        "Image": "lscr.io/linuxserver/radarr:latest",
+        "State": "running",
+        "Status": "Up 5 days",
+        "Created": 1717977600,
+        "Ports": [
+            {"PrivatePort": 7878, "PublicPort": 7878, "Type": "tcp"}
+        ],
+        "Mounts": [
+            {"Type": "bind"},
+            {"Type": "bind"}
+        ]
+    },
+    {
+        "Id": "bad000dead00012345678901234567890123456789012345678901234567",
+        "Names": ["/old-container"],
+        "Image": "old-image:v1",
+        "State": "exited",
+        "Status": "Exited (0) 3 days ago",
+        "Created": 1717804800,
+        "Ports": [],
+        "Mounts": []
+    },
+    {
+        "Id": "sick111bad00012345678901234567890123456789012345678901234567",
+        "Names": ["/unhealthy-app"],
+        "Image": "some-app:latest",
+        "State": "running",
+        "Status": "Up 2 days (unhealthy)",
+        "Created": 1717977600,
+        "Ports": [
+            {"PrivatePort": 3000, "PublicPort": 3000, "Type": "tcp"}
+        ],
+        "Mounts": []
+    }
+]

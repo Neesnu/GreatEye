@@ -1,0 +1,108 @@
+<h2>Roles &amp; Permissions</h2>
+<p class="admin-subtitle">Manage roles and their permission assignments.</p>
+
+<div class="admin-toolbar">
+    <form hx-post="/admin/roles"
+          hx-target="#toast-container"
+          hx-swap="beforeend"
+          class="admin-inline-form">
+        <input class="form-input" type="text" name="name"
+               placeholder="New role name" required>
+        <input class="form-input" type="text" name="description"
+               placeholder="Description (optional)">
+        <button type="submit" class="btn btn--primary">Create Role</button>
+    </form>
+</div>
+
+{% if roles %}
+<div class="admin-table-wrap">
+    <table class="admin-table admin-table--permissions">
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>System</th>
+                <th>Permissions</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for role in roles %}
+            <tr>
+                <td>
+                    <strong>{{ role.name }}</strong>
+                    {% if role.description %}
+                    <br><span class="text-muted">{{ role.description }}</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if role.is_system %}
+                    <span class="badge badge--role">System</span>
+                    {% else %}
+                    <span class="badge badge--unknown">Custom</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <span class="text-muted">{{ role.permissions | length }} permissions</span>
+                </td>
+                <td class="admin-actions">
+                    <button class="btn btn--sm"
+                            hx-get="/admin/roles/{{ role.id }}/edit"
+                            hx-target="#main-content"
+                            hx-push-url="true">Edit Permissions</button>
+                    {% if not role.is_system %}
+                    <button class="btn btn--sm btn--danger"
+                            hx-delete="/admin/roles/{{ role.id }}"
+                            hx-confirm="Delete role '{{ role.name }}'?"
+                            hx-target="closest tr"
+                            hx-swap="outerHTML">Delete</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{# Permission matrix summary #}
+{% if perm_groups %}
+<h3 class="admin-section-title">Permission Matrix</h3>
+<div class="admin-table-wrap">
+    <table class="admin-table admin-table--matrix">
+        <thead>
+            <tr>
+                <th>Permission</th>
+                <th>Category</th>
+                {% for role in roles %}
+                <th class="text-center">{{ role.name }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for provider_type, perms in perm_groups.items() %}
+            <tr class="admin-table__group-header">
+                <td colspan="{{ roles | length + 2 }}">{{ provider_type }}</td>
+            </tr>
+            {% for perm in perms %}
+            <tr>
+                <td>{{ perm.display_name }}</td>
+                <td><span class="badge badge--{{ perm.category }}">{{ perm.category }}</span></td>
+                {% for role in roles %}
+                <td class="text-center">
+                    {% if perm in role.permissions %}
+                    <span class="perm-check">&#10003;</span>
+                    {% else %}
+                    <span class="perm-none">—</span>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% else %}
+<p class="admin-empty">No roles found.</p>
+{% endif %}

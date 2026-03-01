@@ -1,0 +1,22 @@
+<h2>Pending Password Resets</h2>
+<p style="color: var(--text-secondary); margin-bottom: var(--space-md);">
+    Share the reset link with the user out-of-band.
+</p>
+
+{% for reset in resets %}
+<div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm); border-bottom: 1px solid var(--border-color);">
+    <div>
+        <span>User ID: {{ reset.user_id }}</span>
+        <span style="color: var(--text-muted); margin-left: var(--space-md);">
+            Expires: {{ reset.expires_at.strftime("%Y-%m-%d %H:%M UTC") }}
+        </span>
+    </div>
+    <button class="btn"
+            hx-delete="/admin/resets/{{ reset.id }}"
+            hx-confirm="Cancel this reset?"
+            hx-target="closest div"
+            hx-swap="outerHTML">Cancel</button>
+</div>
+{% else %}
+<p style="color: var(--text-muted);">No pending resets.</p>
+{% endfor %}

@@ -1,0 +1,47 @@
+{% if detail.system %}
+<h3 class="detail-section-title">Host</h3>
+<div class="plex-server-info">
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">OS</span>
+        <span class="plex-server-info__value">{{ detail.system.os }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Kernel</span>
+        <span class="plex-server-info__value">{{ detail.system.kernel }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">CPUs</span>
+        <span class="plex-server-info__value">{{ detail.system.cpus }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Memory</span>
+        <span class="plex-server-info__value">{{ detail.system.memory_total_formatted }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Storage Driver</span>
+        <span class="plex-server-info__value">{{ detail.system.storage_driver }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Images</span>
+        <span class="plex-server-info__value">{{ detail.system.images }}</span>
+    </div>
+</div>
+{% endif %}
+
+{% if detail.version %}
+<h3 class="detail-section-title">Docker Engine</h3>
+<div class="plex-server-info">
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Version</span>
+        <span class="plex-server-info__value">{{ detail.version.version }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">API Version</span>
+        <span class="plex-server-info__value">{{ detail.version.api_version }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Architecture</span>
+        <span class="plex-server-info__value">{{ detail.version.arch }}</span>
+    </div>
+</div>
+{% endif %}

@@ -1,0 +1,63 @@
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Series</span>
+        <span class="detail-stat__value">{{ detail.series | length }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Episodes on Disk</span>
+        <span class="detail-stat__value">
+            {% set total_ep = detail.series | sum(attribute='episode_count') %}
+            {% set file_ep = detail.series | sum(attribute='episode_file_count') %}
+            {{ file_ep }} / {{ total_ep }}
+        </span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Missing</span>
+        <span class="detail-stat__value">{{ detail.missing.total_records }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Queue</span>
+        <span class="detail-stat__value">{{ detail.queue.total_records }}</span>
+    </div>
+</div>
+
+{% if detail.disk_space %}
+<h3 class="detail-section-title">Disk Space</h3>
+<div class="arr-disk-list">
+    {% for disk in detail.disk_space %}
+    <div class="arr-disk">
+        <div class="arr-disk__label">{{ disk.label or disk.path }}</div>
+        <div class="arr-disk__bar">
+            {% set used = disk.total_space - disk.free_space %}
+            {% set pct = (used / disk.total_space * 100) if disk.total_space > 0 else 0 %}
+            <div class="arr-disk__used{% if pct > 90 %} arr-disk__used--critical{% elif pct > 75 %} arr-disk__used--warn{% endif %}"
+                 style="width: {{ pct | round(1) }}%"></div>
+        </div>
+        <div class="arr-disk__info">
+            {{ disk.free_space_formatted }} free of {{ disk.total_space_formatted }}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if detail.health %}
+<h3 class="detail-section-title">Health Warnings</h3>
+<div class="arr-health-list">
+    {% for h in detail.health %}
+    <div class="arr-health-item arr-health-item--{{ h.type }}">
+        <span class="arr-health-item__source">{{ h.source }}</span>
+        <span class="arr-health-item__message">{{ h.message }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if detail.quality_profiles %}
+<h3 class="detail-section-title">Quality Profiles</h3>
+<div class="arr-profiles">
+    {% for p in detail.quality_profiles %}
+    <span class="arr-profile-badge">{{ p.name }}</span>
+    {% endfor %}
+</div>
+{% endif %}

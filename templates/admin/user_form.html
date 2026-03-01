@@ -1,0 +1,71 @@
+{% if edit_user %}
+<h2>Edit User: {{ edit_user.username }}</h2>
+{% else %}
+<h2>Add User</h2>
+{% endif %}
+
+<form {% if edit_user %}
+        hx-put="/admin/users/{{ edit_user.id }}"
+      {% else %}
+        hx-post="/admin/users"
+      {% endif %}
+      hx-target="#toast-container"
+      hx-swap="beforeend"
+      class="admin-form">
+
+    {% if not edit_user %}
+    <div class="form-group">
+        <label class="form-label" for="username">Username</label>
+        <input class="form-input" type="text" id="username" name="username"
+               required autocomplete="off">
+    </div>
+    {% else %}
+    <div class="form-group">
+        <label class="form-label">Username</label>
+        <p class="form-static">{{ edit_user.username }}</p>
+    </div>
+    {% endif %}
+
+    <div class="form-group">
+        <label class="form-label" for="password">
+            {% if edit_user %}New Password{% else %}Password{% endif %}
+        </label>
+        <input class="form-input" type="password" id="password" name="password"
+               {% if not edit_user %}required{% endif %}
+               minlength="8"
+               placeholder="{% if edit_user %}Leave blank to keep current{% else %}Minimum 8 characters{% endif %}"
+               autocomplete="new-password">
+    </div>
+
+    <div class="form-group">
+        <label class="form-label" for="role_id">Role</label>
+        <select class="form-input" id="role_id" name="role_id" required>
+            {% for role in roles %}
+            <option value="{{ role.id }}"
+                    {% if edit_user and edit_user.role_id == role.id %}selected{% endif %}>
+                {{ role.name }}{% if role.description %} — {{ role.description }}{% endif %}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    {% if edit_user %}
+    <div class="form-group">
+        <label class="form-checkbox">
+            <input type="checkbox" name="is_active" value="on"
+                   {% if edit_user.is_active %}checked{% endif %}>
+            Account active
+        </label>
+    </div>
+    {% endif %}
+
+    <div class="admin-form-actions">
+        <button type="submit" class="btn btn--primary">
+            {% if edit_user %}Save Changes{% else %}Create User{% endif %}
+        </button>
+        <a class="btn"
+           hx-get="/admin/users"
+           hx-target="#main-content"
+           hx-push-url="true">Cancel</a>
+    </div>
+</form>

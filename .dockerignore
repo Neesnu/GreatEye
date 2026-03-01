@@ -1,0 +1,48 @@
+# Virtual environment
+venv/
+.venv/
+
+# Git
+.git/
+.gitignore
+
+# Claude
+.claude/
+.claudeignore
+
+# Tests & fixtures
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Specs & scenarios (design docs only)
+specs/
+scenarios/
+
+# Environment files
+.env
+.env.example
+
+# Database files (created at runtime in /config)
+*.db
+*.db-wal
+*.db-shm
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db

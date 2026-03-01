@@ -1,0 +1,28 @@
+{% if detail.recently_added %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Library</th>
+            <th>Year</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in detail.recently_added %}
+        <tr>
+            <td title="{{ item.grandparent_title }} {{ item.parent_title }} {{ item.title }}">
+                {% if item.grandparent_title %}{{ item.grandparent_title }} — {% endif %}
+                {% if item.parent_title %}{{ item.parent_title }} — {% endif %}
+                {{ item.title }}
+            </td>
+            <td>{{ item.media_type }}</td>
+            <td>{{ item.library_name }}</td>
+            <td>{{ item.year }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No recently added items</p>
+{% endif %}

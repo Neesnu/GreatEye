@@ -1,0 +1,40 @@
+{
+    "page": 1,
+    "pageSize": 20,
+    "sortKey": "timeleft",
+    "sortDirection": "ascending",
+    "totalRecords": 1,
+    "records": [
+        {
+            "id": 201,
+            "movieId": 3,
+            "movie": {
+                "id": 3,
+                "title": "Upcoming Movie",
+                "year": 2025
+            },
+            "quality": {
+                "quality": {
+                    "id": 7,
+                    "name": "Bluray-1080p",
+                    "source": "bluray",
+                    "resolution": 1080
+                },
+                "revision": {"version": 1, "real": 0, "isRepack": false}
+            },
+            "customFormats": [
+                {"id": 1, "name": "x265"}
+            ],
+            "size": 4294967296,
+            "sizeleft": 1073741824,
+            "timeleft": "00:25:00",
+            "status": "downloading",
+            "trackedDownloadStatus": "ok",
+            "trackedDownloadState": "downloading",
+            "statusMessages": [],
+            "downloadClient": "qBittorrent",
+            "indexer": "Prowlarr",
+            "outputPath": "/00_media/downloads/movies/"
+        }
+    ]
+}

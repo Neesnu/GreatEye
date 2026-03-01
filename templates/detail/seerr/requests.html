@@ -1,0 +1,43 @@
+{% if detail.requests.records %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Request Status</th>
+            <th>Media Status</th>
+            <th>Requested By</th>
+            <th>Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for r in detail.requests.records %}
+        <tr>
+            <td title="{{ r.media_title }}">{{ r.media_title | truncate(35) }}</td>
+            <td>{{ r.type }}</td>
+            <td><span class="seerr-status seerr-status--{{ r.request_status | lower }}">{{ r.request_status }}</span></td>
+            <td><span class="seerr-media-status seerr-media-status--{{ r.media_status | lower }}">{{ r.media_status }}</span></td>
+            <td>{{ r.requested_by }}</td>
+            <td>{{ r.requested_at[:10] if r.requested_at else '—' }}</td>
+            <td>
+                {% if r.request_status == 'Pending' and ('seerr.approve' in permission_keys or 'system.admin' in permission_keys) %}
+                <form hx-post="/providers/{{ instance_id }}/actions/approve_request"
+                      hx-target="#toast-container" hx-swap="innerHTML" style="display: inline;">
+                    <input type="hidden" name="request_id" value="{{ r.id }}">
+                    <button type="submit" class="btn btn--sm btn--ok" title="Approve">Approve</button>
+                </form>
+                <form hx-post="/providers/{{ instance_id }}/actions/decline_request"
+                      hx-target="#toast-container" hx-swap="innerHTML" style="display: inline;">
+                    <input type="hidden" name="request_id" value="{{ r.id }}">
+                    <button type="submit" class="btn btn--sm btn--danger" title="Decline">Decline</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No requests</p>
+{% endif %}

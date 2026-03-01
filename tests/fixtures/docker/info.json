@@ -1,0 +1,14 @@
+{
+    "ServerVersion": "24.0.7",
+    "Containers": 4,
+    "ContainersRunning": 3,
+    "ContainersPaused": 0,
+    "ContainersStopped": 1,
+    "Images": 30,
+    "Driver": "overlay2",
+    "MemTotal": 68719476736,
+    "NCPU": 16,
+    "OperatingSystem": "Unraid 6.12.6",
+    "KernelVersion": "5.15.0-unraid",
+    "Architecture": "x86_64"
+}

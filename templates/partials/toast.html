@@ -1,0 +1,4 @@
+<div class="toast toast--{{ toast_type | default('success') }}" role="alert">
+    {{ message }}
+    <script>setTimeout(function(){ this.parentElement.remove(); }.bind(document.currentScript), 5000);</script>
+</div>

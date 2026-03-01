@@ -1,0 +1,43 @@
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Indexers</span>
+        <span class="detail-stat__value">{{ detail.indexers | length }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Healthy</span>
+        <span class="detail-stat__value">{{ detail.indexers | selectattr('derived_status', 'equalto', 'healthy') | list | length }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Failing</span>
+        <span class="detail-stat__value">{{ detail.indexers | selectattr('derived_status', 'equalto', 'failing') | list | length }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Disabled</span>
+        <span class="detail-stat__value">{{ detail.indexers | selectattr('derived_status', 'equalto', 'disabled') | list | length }}</span>
+    </div>
+</div>
+
+{% if detail.apps %}
+<h3 class="detail-section-title">Connected Apps</h3>
+<div class="prowlarr-apps-list">
+    {% for app in detail.apps %}
+    <div class="prowlarr-app-item">
+        <span class="prowlarr-app-item__name">{{ app.name }}</span>
+        <span class="prowlarr-app-item__impl">{{ app.implementation }}</span>
+        <span class="prowlarr-app-item__sync">{{ app.sync_level }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if detail.health %}
+<h3 class="detail-section-title">Health Warnings</h3>
+<div class="arr-health-list">
+    {% for h in detail.health %}
+    <div class="arr-health-item arr-health-item--{{ h.type }}">
+        <span class="arr-health-item__source">{{ h.source }}</span>
+        <span class="arr-health-item__message">{{ h.message }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

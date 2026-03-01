@@ -1,0 +1,69 @@
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+    {% set s = instance.summary %}
+    <div class="qbit-speeds">
+        <div class="qbit-speed qbit-speed--down">
+            <span class="qbit-speed__label">DL</span>
+            <span class="qbit-speed__value">{{ s.global_download_speed_formatted }}</span>
+        </div>
+        <div class="qbit-speed qbit-speed--up">
+            <span class="qbit-speed__label">UL</span>
+            <span class="qbit-speed__value">{{ s.global_upload_speed_formatted }}</span>
+        </div>
+    </div>
+
+    <div class="qbit-counts">
+        <span class="qbit-count" title="Active downloads">{{ s.active_downloads }} DL</span>
+        <span class="qbit-count" title="Seeding">{{ s.active_uploads }} UL</span>
+        <span class="qbit-count" title="Paused">{{ s.paused }} paused</span>
+        {% if s.errored and s.errored > 0 %}
+        <span class="qbit-count qbit-count--error" title="Errored">{{ s.errored }} err</span>
+        {% endif %}
+    </div>
+
+    {% if s.alt_speed_enabled %}
+    <div class="qbit-alt-speed">Alt speed active</div>
+    {% endif %}
+
+    {% if s.recent_torrents %}
+    <div class="qbit-recent">
+        {% for t in s.recent_torrents[:5] %}
+        <div class="qbit-torrent">
+            <div class="qbit-torrent__name" title="{{ t.name }}">{{ t.name | truncate(40) }}</div>
+            <div class="qbit-torrent__bar">
+                <div class="qbit-torrent__progress qbit-torrent__progress--{{ t.state }}"
+                     style="width: {{ (t.progress * 100) | round(1) }}%"></div>
+            </div>
+            <div class="qbit-torrent__info">
+                <span>{{ (t.progress * 100) | round(1) }}%</span>
+                {% if t.download_speed and t.download_speed > 0 %}
+                <span>{{ t.download_speed_formatted }}</span>
+                {% endif %}
+                {% if t.eta and t.eta > 0 %}
+                <span>{{ t.eta_formatted }}</span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="card__metric">
+        <span class="card__metric-label">Disk</span>
+        <span class="card__metric-value">{{ s.free_disk_space_formatted }} free</span>
+    </div>
+    {% else %}
+    <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ instance.type_display_name }}</span>
+</div>

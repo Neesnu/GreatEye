@@ -1,0 +1,30 @@
+{% if detail.history %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Event</th>
+            <th>Source</th>
+            <th>Result</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for h in detail.history %}
+        <tr>
+            <td>{{ h.date[:19] if h.date else '—' }}</td>
+            <td>{{ h.event_type }}</td>
+            <td title="{{ h.source_title }}">{{ h.source_title | truncate(50) }}</td>
+            <td>
+                {% if h.successful %}
+                <span class="arr-status arr-status--healthy">OK</span>
+                {% else %}
+                <span class="arr-status arr-status--failing">Failed</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No history records</p>
+{% endif %}

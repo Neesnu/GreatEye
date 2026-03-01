@@ -1,0 +1,32 @@
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Libraries</span>
+        <span class="detail-stat__value">{{ detail.libraries | length }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Active Sessions</span>
+        <span class="detail-stat__value">{{ detail.sessions | length }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Transcodes</span>
+        <span class="detail-stat__value">{{ detail.sessions | selectattr('is_transcode') | list | length }}</span>
+    </div>
+</div>
+
+{% if detail.server %}
+<h3 class="detail-section-title">Server Info</h3>
+<div class="plex-server-info">
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Name</span>
+        <span class="plex-server-info__value">{{ detail.server.name }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Version</span>
+        <span class="plex-server-info__value">{{ detail.server.version }}</span>
+    </div>
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">Platform</span>
+        <span class="plex-server-info__value">{{ detail.server.platform }}</span>
+    </div>
+</div>
+{% endif %}

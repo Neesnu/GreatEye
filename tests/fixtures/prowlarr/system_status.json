@@ -1,0 +1,20 @@
+{
+    "appName": "Prowlarr",
+    "instanceName": "Prowlarr",
+    "version": "1.12.2.4211",
+    "buildTime": "2024-05-01T00:00:00Z",
+    "isDebug": false,
+    "isProduction": true,
+    "isAdmin": true,
+    "isUserInteractive": false,
+    "startupPath": "/opt/prowlarr",
+    "appData": "/config",
+    "osName": "Linux",
+    "osVersion": "6.1.0",
+    "isDocker": true,
+    "isMono": false,
+    "isLinux": true,
+    "isOsx": false,
+    "isWindows": false,
+    "runtimeVersion": "6.0.25"
+}

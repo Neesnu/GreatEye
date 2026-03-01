@@ -1,0 +1,34 @@
+{
+    "indexers": [
+        {
+            "indexerId": 1,
+            "indexerName": "NZBgeek",
+            "numberOfQueries": 150,
+            "numberOfGrabs": 25,
+            "numberOfRssQueries": 50,
+            "numberOfFailedQueries": 0,
+            "numberOfFailedGrabs": 0,
+            "averageResponseTime": 320
+        },
+        {
+            "indexerId": 2,
+            "indexerName": "1337x",
+            "numberOfQueries": 100,
+            "numberOfGrabs": 10,
+            "numberOfRssQueries": 30,
+            "numberOfFailedQueries": 60,
+            "numberOfFailedGrabs": 5,
+            "averageResponseTime": 850
+        },
+        {
+            "indexerId": 3,
+            "indexerName": "OldIndexer",
+            "numberOfQueries": 0,
+            "numberOfGrabs": 0,
+            "numberOfRssQueries": 0,
+            "numberOfFailedQueries": 0,
+            "numberOfFailedGrabs": 0,
+            "averageResponseTime": 0
+        }
+    ]
+}

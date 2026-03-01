@@ -1,0 +1,5 @@
+{
+    "upstreams": [
+        {"name": "Unbound", "ip": "10.0.0.1#5335", "count": 7748}
+    ]
+}

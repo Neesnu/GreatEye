@@ -1,0 +1,52 @@
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+    {% set s = instance.summary %}
+    <div class="arr-stats">
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.indexer_count or 0 }}</span>
+            <span class="arr-stat__label">Indexers</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value arr-stat__value--ok">{{ s.indexers_healthy or 0 }}</span>
+            <span class="arr-stat__label">Healthy</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value{% if s.indexers_failing %} arr-stat__value--warn{% endif %}">{{ s.indexers_failing or 0 }}</span>
+            <span class="arr-stat__label">Failing</span>
+        </div>
+    </div>
+
+    <div class="prowlarr-activity">
+        <span class="prowlarr-activity__item" title="Total queries today">{{ s.total_queries_today or 0 }} queries</span>
+        <span class="prowlarr-activity__item" title="Total grabs today">{{ s.total_grabs_today or 0 }} grabs</span>
+    </div>
+
+    {% if s.apps %}
+    <div class="prowlarr-apps">
+        <span class="prowlarr-apps__label">Apps:</span>
+        {% for app in s.apps %}
+        <span class="prowlarr-app-badge">{{ app.name }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if s.health_warnings %}
+    <div class="arr-health-badge arr-health-badge--warn">
+        {{ s.health_warnings | length }} warning{{ 's' if s.health_warnings | length != 1 }}
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ instance.type_display_name }}</span>
+</div>

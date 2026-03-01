@@ -1,0 +1,7 @@
+{
+    "domains": [
+        {"domain": "google.com", "count": 1500},
+        {"domain": "facebook.com", "count": 800},
+        {"domain": "github.com", "count": 500}
+    ]
+}

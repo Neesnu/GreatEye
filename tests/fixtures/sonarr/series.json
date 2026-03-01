@@ -1,0 +1,129 @@
+[
+    {
+        "id": 1,
+        "title": "Breaking Bad",
+        "sortTitle": "breaking bad",
+        "status": "ended",
+        "overview": "A chemistry teacher diagnosed with terminal lung cancer...",
+        "network": "AMC",
+        "year": 2008,
+        "path": "/00_media/TV Shows/Breaking Bad",
+        "qualityProfileId": 1,
+        "seasonFolder": true,
+        "monitored": true,
+        "tags": [1],
+        "seasons": [
+            {
+                "seasonNumber": 1,
+                "monitored": true,
+                "statistics": {
+                    "episodeFileCount": 7,
+                    "episodeCount": 7,
+                    "totalEpisodeCount": 7,
+                    "sizeOnDisk": 10737418240,
+                    "percentOfEpisodes": 100.0
+                }
+            },
+            {
+                "seasonNumber": 2,
+                "monitored": true,
+                "statistics": {
+                    "episodeFileCount": 13,
+                    "episodeCount": 13,
+                    "totalEpisodeCount": 13,
+                    "sizeOnDisk": 15032385536,
+                    "percentOfEpisodes": 100.0
+                }
+            }
+        ],
+        "statistics": {
+            "seasonCount": 2,
+            "episodeFileCount": 20,
+            "episodeCount": 20,
+            "totalEpisodeCount": 20,
+            "sizeOnDisk": 25769803776,
+            "percentOfEpisodes": 100.0
+        }
+    },
+    {
+        "id": 2,
+        "title": "The Last of Us",
+        "sortTitle": "last of us",
+        "status": "continuing",
+        "overview": "Joel and Ellie traverse a post-apocalyptic America...",
+        "network": "HBO",
+        "year": 2023,
+        "path": "/00_media/TV Shows/The Last of Us",
+        "qualityProfileId": 2,
+        "seasonFolder": true,
+        "monitored": true,
+        "tags": [2],
+        "seasons": [
+            {
+                "seasonNumber": 1,
+                "monitored": true,
+                "statistics": {
+                    "episodeFileCount": 9,
+                    "episodeCount": 9,
+                    "totalEpisodeCount": 9,
+                    "sizeOnDisk": 42949672960,
+                    "percentOfEpisodes": 100.0
+                }
+            },
+            {
+                "seasonNumber": 2,
+                "monitored": true,
+                "statistics": {
+                    "episodeFileCount": 3,
+                    "episodeCount": 7,
+                    "totalEpisodeCount": 7,
+                    "sizeOnDisk": 12884901888,
+                    "percentOfEpisodes": 42.9
+                }
+            }
+        ],
+        "statistics": {
+            "seasonCount": 2,
+            "episodeFileCount": 12,
+            "episodeCount": 16,
+            "totalEpisodeCount": 16,
+            "sizeOnDisk": 55834574848,
+            "percentOfEpisodes": 75.0
+        }
+    },
+    {
+        "id": 3,
+        "title": "Stranger Things",
+        "sortTitle": "stranger things",
+        "status": "ended",
+        "overview": "When a young boy disappears...",
+        "network": "Netflix",
+        "year": 2016,
+        "path": "/00_media/TV Shows/Stranger Things",
+        "qualityProfileId": 1,
+        "seasonFolder": true,
+        "monitored": false,
+        "tags": [],
+        "seasons": [
+            {
+                "seasonNumber": 1,
+                "monitored": false,
+                "statistics": {
+                    "episodeFileCount": 8,
+                    "episodeCount": 8,
+                    "totalEpisodeCount": 8,
+                    "sizeOnDisk": 21474836480,
+                    "percentOfEpisodes": 100.0
+                }
+            }
+        ],
+        "statistics": {
+            "seasonCount": 1,
+            "episodeFileCount": 8,
+            "episodeCount": 8,
+            "totalEpisodeCount": 8,
+            "sizeOnDisk": 21474836480,
+            "percentOfEpisodes": 100.0
+        }
+    }
+]

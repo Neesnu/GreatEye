@@ -1,0 +1,49 @@
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+    {% set s = instance.summary %}
+    <div class="arr-stats">
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.library_count or 0 }}</span>
+            <span class="arr-stat__label">Libraries</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value{% if s.stream_count %} arr-stat__value--active{% endif %}">{{ s.stream_count or 0 }}</span>
+            <span class="arr-stat__label">Streams</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.transcode_count or 0 }}</span>
+            <span class="arr-stat__label">Transcodes</span>
+        </div>
+    </div>
+
+    {% if s.sessions %}
+    <div class="plex-sessions">
+        {% for sess in s.sessions[:3] %}
+        <div class="plex-session">
+            <div class="plex-session__title" title="{{ sess.grandparent_title }} — {{ sess.title }}" >
+                {% if sess.grandparent_title %}{{ sess.grandparent_title | truncate(20) }} — {% endif %}{{ sess.title | truncate(20) }}
+            </div>
+            <div class="plex-session__meta">
+                <span class="plex-session__user">{{ sess.user }}</span>
+                <span class="plex-session__state plex-session__state--{{ sess.state }}">{{ sess.state }}</span>
+                {% if sess.is_transcode %}<span class="plex-transcode-badge">transcode</span>{% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ instance.type_display_name }}</span>
+</div>

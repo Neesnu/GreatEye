@@ -1,0 +1,41 @@
+<div class="sidebar__logo">Great Eye</div>
+<nav class="sidebar__nav" aria-label="Main navigation">
+    <a href="/dashboard"
+       class="sidebar__link{% if active_page == 'dashboard' %} sidebar__link--active{% endif %}"
+       {% if active_page == 'dashboard' %}aria-current="page"{% endif %}>
+        Dashboard
+    </a>
+
+    {% if instances is defined and instances %}
+    <div class="sidebar__section-title">Providers</div>
+    {% for inst in instances %}
+    <a href="/providers/{{ inst.instance_id }}/detail"
+       class="sidebar__link">
+        <span class="health-dot health-dot--{{ inst.health_status }}"
+              title="{{ inst.health_message }}"
+              aria-label="{{ inst.health_status }}"></span>
+        {{ inst.display_name }}
+    </a>
+    {% endfor %}
+    {% endif %}
+
+    {% if user is defined and user.role and user.role.name == 'admin' %}
+    <div class="sidebar__section-title">Admin</div>
+    <a href="/admin/settings" class="sidebar__link"
+       hx-get="/admin/settings" hx-target="#main-content" hx-push-url="true">Settings</a>
+    <a href="/admin/providers" class="sidebar__link"
+       hx-get="/admin/providers" hx-target="#main-content" hx-push-url="true">Providers</a>
+    <a href="/admin/users" class="sidebar__link"
+       hx-get="/admin/users" hx-target="#main-content" hx-push-url="true">Users</a>
+    <a href="/admin/roles" class="sidebar__link"
+       hx-get="/admin/roles" hx-target="#main-content" hx-push-url="true">Roles</a>
+    {% endif %}
+</nav>
+
+<div class="sidebar__footer">
+    <form method="post" action="/auth/logout">
+        <button type="submit" class="sidebar__link sidebar__logout">
+            Sign Out
+        </button>
+    </form>
+</div>

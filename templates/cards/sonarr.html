@@ -1,0 +1,80 @@
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+    {% set s = instance.summary %}
+    <div class="arr-stats">
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.series_count or 0 }}</span>
+            <span class="arr-stat__label">Series</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.episode_file_count or 0 }}</span>
+            <span class="arr-stat__label">Episodes</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.missing_count or 0 }}</span>
+            <span class="arr-stat__label">Missing</span>
+        </div>
+    </div>
+
+    {% if s.queue and s.queue.total > 0 %}
+    <div class="arr-queue-summary">
+        <span class="arr-queue-summary__count">{{ s.queue.total }} in queue</span>
+        {% if s.queue.errors > 0 %}
+        <span class="arr-queue-summary__errors">{{ s.queue.errors }} error{{ 's' if s.queue.errors != 1 }}</span>
+        {% endif %}
+    </div>
+    {% if s.queue.items %}
+    <div class="arr-queue-items">
+        {% for item in s.queue.items[:3] %}
+        <div class="arr-queue-item">
+            <div class="arr-queue-item__title" title="{{ item.media_title }}">
+                {{ item.media_title | truncate(30) }}
+            </div>
+            <div class="arr-queue-item__bar">
+                <div class="arr-queue-item__progress" style="width: {{ item.progress }}%"></div>
+            </div>
+            <div class="arr-queue-item__info">
+                <span>{{ item.detail_title }}</span>
+                <span>{{ item.progress }}%</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if s.calendar_upcoming %}
+    <div class="arr-next-episode">
+        {% set next = s.calendar_upcoming[0] %}
+        <span class="arr-next-label">Next:</span>
+        <span class="arr-next-title" title="{{ next.series_title }} - {{ next.episode_title }}">
+            {{ next.series_title | truncate(25) }} S{{ '%02d' | format(next.season_number) }}E{{ '%02d' | format(next.episode_number) }}
+        </span>
+    </div>
+    {% endif %}
+
+    {% if s.health_warnings %}
+    <div class="arr-health-badge arr-health-badge--warn">
+        {{ s.health_warnings | length }} warning{{ 's' if s.health_warnings | length != 1 }}
+    </div>
+    {% endif %}
+
+    <div class="card__metric">
+        <span class="card__metric-label">Disk</span>
+        <span class="card__metric-value">{{ s.size_on_disk_formatted }}</span>
+    </div>
+    {% else %}
+    <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ instance.type_display_name }}</span>
+</div>

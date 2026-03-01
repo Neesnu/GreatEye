@@ -1,0 +1,30 @@
+[
+    {
+        "id": 504,
+        "seriesId": 2,
+        "seasonNumber": 2,
+        "episodeNumber": 6,
+        "title": "The Last One",
+        "airDateUtc": "2025-06-20T01:00:00Z",
+        "monitored": true,
+        "hasFile": false,
+        "series": {
+            "id": 2,
+            "title": "The Last of Us"
+        }
+    },
+    {
+        "id": 505,
+        "seriesId": 2,
+        "seasonNumber": 2,
+        "episodeNumber": 7,
+        "title": "Finale",
+        "airDateUtc": "2025-06-27T01:00:00Z",
+        "monitored": true,
+        "hasFile": false,
+        "series": {
+            "id": 2,
+            "title": "The Last of Us"
+        }
+    }
+]

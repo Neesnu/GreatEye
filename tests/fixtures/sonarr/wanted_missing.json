@@ -1,0 +1,23 @@
+{
+    "page": 1,
+    "pageSize": 1,
+    "sortKey": "airDateUtc",
+    "sortDirection": "descending",
+    "totalRecords": 4,
+    "records": [
+        {
+            "id": 503,
+            "seriesId": 2,
+            "seasonNumber": 2,
+            "episodeNumber": 6,
+            "title": "The Last One",
+            "airDateUtc": "2025-06-20T01:00:00Z",
+            "monitored": true,
+            "hasFile": false,
+            "series": {
+                "id": 2,
+                "title": "The Last of Us"
+            }
+        }
+    ]
+}

@@ -1,0 +1,4 @@
+# .claudeignore
+scenarios/
+eval-scenarios.md
+greateye_scenarios.py

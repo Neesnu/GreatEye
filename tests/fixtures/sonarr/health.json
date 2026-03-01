@@ -1,0 +1,8 @@
+[
+    {
+        "source": "IndexerRssCheck",
+        "type": "warning",
+        "message": "No indexers available with RSS sync enabled",
+        "wikiUrl": "https://wiki.servarr.com/sonarr/system#no-indexers-available-with-rss-sync-enabled"
+    }
+]

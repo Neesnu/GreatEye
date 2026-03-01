@@ -1,0 +1,48 @@
+{% if detail.sessions %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Title</th>
+            <th>Player</th>
+            <th>State</th>
+            <th>Progress</th>
+            <th>Quality</th>
+            <th>Transcode</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in detail.sessions %}
+        <tr>
+            <td>{{ s.user }}</td>
+            <td title="{{ s.grandparent_title }} — {{ s.title }}">
+                {% if s.grandparent_title %}{{ s.grandparent_title | truncate(15) }} — {% endif %}{{ s.title | truncate(20) }}
+            </td>
+            <td>{{ s.player }} ({{ s.platform }})</td>
+            <td><span class="plex-session__state plex-session__state--{{ s.state }}">{{ s.state }}</span></td>
+            <td>
+                <div class="arr-queue-item__bar">
+                    <div class="arr-queue-item__progress" style="width: {{ s.progress | round(1) }}%"></div>
+                </div>
+                <span class="arr-queue-item__pct">{{ s.progress | round(1) }}%</span>
+            </td>
+            <td>{{ s.video_resolution }}</td>
+            <td>{% if s.is_transcode %}<span class="plex-transcode-badge">transcode</span>{% else %}direct{% endif %}</td>
+            <td>
+                {% if 'plex.manage' in permission_keys or 'system.admin' in permission_keys %}
+                <form hx-post="/providers/{{ instance_id }}/actions/kill_stream"
+                      hx-target="#toast-container" hx-swap="innerHTML"
+                      hx-confirm="Terminate this stream? The user will be disconnected.">
+                    <input type="hidden" name="session_id" value="{{ s.session_id }}">
+                    <button type="submit" class="btn btn--sm btn--danger" title="Terminate">Kill</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No active sessions</p>
+{% endif %}

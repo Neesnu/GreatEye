@@ -1,0 +1,40 @@
+{
+    "response": {
+        "result": "success",
+        "message": null,
+        "data": {
+            "recordsFiltered": 2,
+            "recordsTotal": 500,
+            "data": [
+                {
+                    "id": 5001,
+                    "date": 1714300800,
+                    "friendly_name": "admin",
+                    "full_title": "The Matrix (1999)",
+                    "title": "The Matrix",
+                    "media_type": "movie",
+                    "duration": 8160,
+                    "play_duration": 7200,
+                    "paused_counter": 120,
+                    "watched_status": 1,
+                    "player": "Plex Web",
+                    "platform": "Chrome"
+                },
+                {
+                    "id": 5002,
+                    "date": 1714214400,
+                    "friendly_name": "john",
+                    "full_title": "Breaking Bad - S01E01 - Pilot",
+                    "title": "Pilot",
+                    "media_type": "episode",
+                    "duration": 3480,
+                    "play_duration": 1800,
+                    "paused_counter": 60,
+                    "watched_status": 0,
+                    "player": "Plex for iOS",
+                    "platform": "iOS"
+                }
+            ]
+        }
+    }
+}

@@ -1,0 +1,40 @@
+{% if detail.indexers %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Protocol</th>
+            <th>Status</th>
+            <th>Queries</th>
+            <th>Grabs</th>
+            <th>Failures</th>
+            <th>Avg RT</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for idx in detail.indexers %}
+        <tr>
+            <td>{{ idx.name }}</td>
+            <td>{{ idx.protocol }}</td>
+            <td><span class="arr-status arr-status--{{ idx.derived_status }}">{{ idx.derived_status }}</span></td>
+            <td>{{ idx.stats.number_of_queries }}</td>
+            <td>{{ idx.stats.number_of_grabs }}</td>
+            <td>{{ idx.stats.number_of_failed_queries + idx.stats.number_of_failed_grabs }}</td>
+            <td>{{ idx.stats.average_response_time_ms }}ms</td>
+            <td>
+                {% if 'prowlarr.test' in permission_keys or 'system.admin' in permission_keys %}
+                <form hx-post="/providers/{{ instance_id }}/actions/test_indexer"
+                      hx-target="#toast-container" hx-swap="innerHTML">
+                    <input type="hidden" name="indexer_id" value="{{ idx.id }}">
+                    <button type="submit" class="btn btn--sm" title="Test">Test</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No indexers configured</p>
+{% endif %}

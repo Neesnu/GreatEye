@@ -1,0 +1,37 @@
+<div class="detail-tabs">
+    <button class="detail-tab detail-tab--active"
+            data-tab="stats"
+            onclick="switchTab(this, 'stats')">Stats</button>
+    <button class="detail-tab"
+            data-tab="security"
+            onclick="switchTab(this, 'security')">Security</button>
+    <button class="detail-tab"
+            data-tab="raw"
+            onclick="switchTab(this, 'raw')">Raw Stats</button>
+</div>
+
+<div id="tab-stats" class="detail-tab-content detail-tab-content--active">
+    {% include "detail/unbound/stats.html" %}
+</div>
+
+<div id="tab-security" class="detail-tab-content" style="display: none;">
+    {% include "detail/unbound/security.html" %}
+</div>
+
+<div id="tab-raw" class="detail-tab-content" style="display: none;">
+    {% include "detail/unbound/raw.html" %}
+</div>
+
+<script>
+function switchTab(btn, tabName) {
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('detail-tab--active'));
+    document.querySelectorAll('.detail-tab-content').forEach(c => {
+        c.classList.remove('detail-tab-content--active');
+        c.style.display = 'none';
+    });
+    btn.classList.add('detail-tab--active');
+    var el = document.getElementById('tab-' + tabName);
+    el.classList.add('detail-tab-content--active');
+    el.style.display = '';
+}
+</script>

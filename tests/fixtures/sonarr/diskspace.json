@@ -1,0 +1,14 @@
+[
+    {
+        "path": "/00_media",
+        "label": "Media",
+        "freeSpace": 1099511627776,
+        "totalSpace": 8796093022208
+    },
+    {
+        "path": "/downloads",
+        "label": "Downloads",
+        "freeSpace": 549755813888,
+        "totalSpace": 1099511627776
+    }
+]

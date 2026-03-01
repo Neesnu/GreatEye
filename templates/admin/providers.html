@@ -1,0 +1,67 @@
+<h2>Provider Instances</h2>
+<p class="admin-subtitle">Manage provider connections for your dashboard.</p>
+
+<div class="admin-toolbar">
+    <a class="btn btn--primary"
+       hx-get="/admin/providers/new"
+       hx-target="#main-content"
+       hx-push-url="true">Add Provider</a>
+</div>
+
+{% if instances %}
+<div class="admin-table-wrap">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Status</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Enabled</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in instances %}
+            <tr>
+                <td>
+                    <span class="health-dot health-dot--{{ item.health_status }}"
+                          title="{{ item.health_message }}"></span>
+                </td>
+                <td>{{ item.instance.display_name }}</td>
+                <td>{{ item.instance.provider_type_id }}</td>
+                <td>
+                    {% if item.instance.is_enabled %}
+                    <span class="badge badge--up">Enabled</span>
+                    {% else %}
+                    <span class="badge badge--down">Disabled</span>
+                    {% endif %}
+                </td>
+                <td class="admin-actions">
+                    <button class="btn btn--sm"
+                            hx-get="/admin/providers/{{ item.instance.id }}/edit"
+                            hx-target="#main-content"
+                            hx-push-url="true">Edit</button>
+                    <button class="btn btn--sm"
+                            hx-post="/admin/providers/{{ item.instance.id }}/test"
+                            hx-target="#test-result-{{ item.instance.id }}"
+                            hx-swap="innerHTML">Test</button>
+                    <button class="btn btn--sm"
+                            hx-post="/admin/providers/{{ item.instance.id }}/toggle"
+                            hx-swap="none">
+                        {% if item.instance.is_enabled %}Disable{% else %}Enable{% endif %}
+                    </button>
+                    <button class="btn btn--sm btn--danger"
+                            hx-delete="/admin/providers/{{ item.instance.id }}"
+                            hx-confirm="Delete {{ item.instance.display_name }}? This cannot be undone."
+                            hx-target="closest tr"
+                            hx-swap="outerHTML">Delete</button>
+                    <div id="test-result-{{ item.instance.id }}" class="test-result-inline"></div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="admin-empty">No provider instances configured yet. Click "Add Provider" to get started.</p>
+{% endif %}

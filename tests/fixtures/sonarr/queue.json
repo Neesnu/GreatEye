@@ -1,0 +1,88 @@
+{
+    "page": 1,
+    "pageSize": 20,
+    "sortKey": "timeleft",
+    "sortDirection": "ascending",
+    "totalRecords": 2,
+    "records": [
+        {
+            "id": 101,
+            "seriesId": 2,
+            "episodeId": 501,
+            "seasonNumber": 2,
+            "series": {
+                "id": 2,
+                "title": "The Last of Us"
+            },
+            "episode": {
+                "id": 501,
+                "seasonNumber": 2,
+                "episodeNumber": 4,
+                "title": "Kin"
+            },
+            "quality": {
+                "quality": {
+                    "id": 3,
+                    "name": "HDTV-1080p",
+                    "source": "television",
+                    "resolution": 1080
+                },
+                "revision": {"version": 1, "real": 0, "isRepack": false}
+            },
+            "customFormats": [
+                {"id": 1, "name": "x264"}
+            ],
+            "size": 1073741824,
+            "sizeleft": 536870912,
+            "timeleft": "00:15:00",
+            "status": "downloading",
+            "trackedDownloadStatus": "ok",
+            "trackedDownloadState": "downloading",
+            "statusMessages": [],
+            "downloadClient": "qBittorrent",
+            "indexer": "Prowlarr",
+            "outputPath": "/00_media/downloads/tv/"
+        },
+        {
+            "id": 102,
+            "seriesId": 2,
+            "episodeId": 502,
+            "seasonNumber": 2,
+            "series": {
+                "id": 2,
+                "title": "The Last of Us"
+            },
+            "episode": {
+                "id": 502,
+                "seasonNumber": 2,
+                "episodeNumber": 5,
+                "title": "Endure and Survive"
+            },
+            "quality": {
+                "quality": {
+                    "id": 3,
+                    "name": "WEBDL-1080p",
+                    "source": "web",
+                    "resolution": 1080
+                },
+                "revision": {"version": 1, "real": 0, "isRepack": false}
+            },
+            "customFormats": [],
+            "size": 2147483648,
+            "sizeleft": 2147483648,
+            "timeleft": "01:30:00",
+            "status": "downloading",
+            "trackedDownloadStatus": "warning",
+            "trackedDownloadState": "downloading",
+            "statusMessages": [
+                {
+                    "title": "The Last of Us - S02E05 - Endure and Survive",
+                    "messages": ["Not enough seeders"]
+                }
+            ],
+            "downloadClient": "qBittorrent",
+            "indexer": "Prowlarr",
+            "outputPath": "/00_media/downloads/tv/"
+        }
+    ]
+}

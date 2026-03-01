@@ -1,0 +1,60 @@
+{% if detail.stats %}
+{% set s = detail.stats %}
+<h3 class="detail-section-title">Queries</h3>
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Total</span>
+        <span class="detail-stat__value">{{ s.queries.total }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Cache Hits</span>
+        <span class="detail-stat__value">{{ s.queries.cache_hits }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Cache Misses</span>
+        <span class="detail-stat__value">{{ s.queries.cache_misses }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Hit Rate</span>
+        <span class="detail-stat__value{% if s.queries.cache_hit_rate > 90 %} arr-stat__value--ok{% endif %}">{{ s.queries.cache_hit_rate }}%</span>
+    </div>
+</div>
+
+<h3 class="detail-section-title">Performance</h3>
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Avg Recursion</span>
+        <span class="detail-stat__value">{{ s.performance.recursion_time_avg_ms }}ms</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Median Recursion</span>
+        <span class="detail-stat__value">{{ s.performance.recursion_time_median_ms }}ms</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Req List Avg</span>
+        <span class="detail-stat__value">{{ s.performance.request_list_avg }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Req List Max</span>
+        <span class="detail-stat__value">{{ s.performance.request_list_max }}</span>
+    </div>
+</div>
+
+<h3 class="detail-section-title">Cache</h3>
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Message Cache</span>
+        <span class="detail-stat__value">{{ s.cache.message_count }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">RRset Cache</span>
+        <span class="detail-stat__value">{{ s.cache.rrset_count }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Infra Cache</span>
+        <span class="detail-stat__value">{{ s.cache.infra_count }}</span>
+    </div>
+</div>
+{% else %}
+<p class="detail-empty">No statistics available</p>
+{% endif %}

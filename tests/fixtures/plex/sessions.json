@@ -1,0 +1,75 @@
+{
+    "MediaContainer": {
+        "size": 2,
+        "Metadata": [
+            {
+                "title": "The Matrix",
+                "grandparentTitle": "",
+                "parentTitle": "",
+                "type": "movie",
+                "viewOffset": 3600000,
+                "duration": 8160000,
+                "User": {
+                    "id": 1,
+                    "title": "admin"
+                },
+                "Player": {
+                    "state": "playing",
+                    "product": "Plex Web",
+                    "platform": "Chrome",
+                    "address": "10.0.0.100"
+                },
+                "Session": {
+                    "id": "sess-001",
+                    "bandwidth": 12000
+                },
+                "Media": [
+                    {
+                        "videoResolution": "1080",
+                        "videoCodec": "h264",
+                        "audioCodec": "aac",
+                        "Part": [
+                            {
+                                "decision": "directplay"
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "title": "Pilot",
+                "grandparentTitle": "Breaking Bad",
+                "parentTitle": "Season 1",
+                "type": "episode",
+                "viewOffset": 600000,
+                "duration": 3480000,
+                "User": {
+                    "id": 2,
+                    "title": "john"
+                },
+                "Player": {
+                    "state": "paused",
+                    "product": "Plex for iOS",
+                    "platform": "iOS",
+                    "address": "10.0.0.101"
+                },
+                "Session": {
+                    "id": "sess-002",
+                    "bandwidth": 8000
+                },
+                "Media": [
+                    {
+                        "videoResolution": "720",
+                        "videoCodec": "h264",
+                        "audioCodec": "aac",
+                        "Part": [
+                            {
+                                "decision": "transcode"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}

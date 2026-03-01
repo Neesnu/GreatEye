@@ -1,0 +1,23 @@
+{
+    "queries": {
+        "total": 36692,
+        "blocked": 9013,
+        "percent_blocked": 24.6,
+        "unique_domains": 2971,
+        "forwarded": 7748,
+        "cached": 19610
+    },
+    "clients": {
+        "active": 15,
+        "total": 22
+    },
+    "gravity": {
+        "domains_being_blocked": 450350,
+        "last_update": "2025-06-15T04:00:00Z"
+    },
+    "version": {
+        "core": "6.2",
+        "ftl": "6.3",
+        "web": "6.3"
+    }
+}

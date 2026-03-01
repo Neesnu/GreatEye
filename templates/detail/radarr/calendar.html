@@ -1,0 +1,34 @@
+{% if detail.calendar %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Movie</th>
+            <th>Year</th>
+            <th>Physical Release</th>
+            <th>Digital Release</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for m in detail.calendar %}
+        <tr>
+            <td title="{{ m.title }}">{{ m.title | truncate(40) }}</td>
+            <td>{{ m.year }}</td>
+            <td>{{ m.physical_release[:10] if m.physical_release else '—' }}</td>
+            <td>{{ m.digital_release[:10] if m.digital_release else '—' }}</td>
+            <td>
+                {% if m.has_file %}
+                <span class="arr-status arr-status--downloaded">Downloaded</span>
+                {% elif m.monitored %}
+                <span class="arr-status arr-status--monitored">Monitored</span>
+                {% else %}
+                <span class="arr-status arr-status--unmonitored">Unmonitored</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No upcoming movies</p>
+{% endif %}

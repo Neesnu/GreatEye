@@ -1,0 +1,27 @@
+{% if instance.card_template %}
+    {% include instance.card_template %}
+{% else %}
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+        {% for key, value in instance.summary.items() %}
+        <div class="card__metric">
+            <span class="card__metric-label">{{ key | replace('_', ' ') | title }}</span>
+            <span class="card__metric-value">{{ value if value is not none else '—' }}</span>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ instance.type_display_name }}</span>
+</div>
+{% endif %}

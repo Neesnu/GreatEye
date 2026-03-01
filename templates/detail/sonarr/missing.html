@@ -1,0 +1,33 @@
+{% if detail.missing.records %}
+<p class="detail-count">{{ detail.missing.total_records }} missing episode{{ 's' if detail.missing.total_records != 1 }}</p>
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Series</th>
+            <th>Episode</th>
+            <th>Air Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ep in detail.missing.records %}
+        <tr>
+            <td title="{{ ep.series_title }}">{{ ep.series_title | truncate(35) }}</td>
+            <td>S{{ '%02d' | format(ep.season_number) }}E{{ '%02d' | format(ep.episode_number) }} - {{ ep.episode_title | truncate(30) }}</td>
+            <td>{{ ep.air_date_utc[:10] if ep.air_date_utc else '—' }}</td>
+            <td>
+                {% if 'sonarr.search' in permission_keys or 'system.admin' in permission_keys %}
+                <form hx-post="/providers/{{ instance_id }}/actions/search_episode"
+                      hx-target="#toast-container" hx-swap="innerHTML">
+                    <input type="hidden" name="episode_ids" value="{{ ep.episode_id }}">
+                    <button type="submit" class="btn btn--sm" title="Search">Search</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No missing episodes</p>
+{% endif %}

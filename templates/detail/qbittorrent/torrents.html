@@ -1,0 +1,68 @@
+<div class="detail-section">
+    <h3 class="detail-section__title">Torrents</h3>
+    {% if detail and detail.torrents %}
+    <div class="torrent-table-wrap">
+        <table class="torrent-table">
+            <thead>
+                <tr>
+                    <th class="torrent-table__th">Name</th>
+                    <th class="torrent-table__th">State</th>
+                    <th class="torrent-table__th">Progress</th>
+                    <th class="torrent-table__th">Size</th>
+                    <th class="torrent-table__th">DL Speed</th>
+                    <th class="torrent-table__th">UL Speed</th>
+                    <th class="torrent-table__th">ETA</th>
+                    <th class="torrent-table__th">Ratio</th>
+                    <th class="torrent-table__th">Category</th>
+                    <th class="torrent-table__th">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in detail.torrents %}
+                <tr class="torrent-row torrent-row--{{ t.state }}">
+                    <td class="torrent-table__td torrent-table__name" title="{{ t.name }}">
+                        {{ t.name | truncate(50) }}
+                    </td>
+                    <td class="torrent-table__td">
+                        <span class="torrent-state torrent-state--{{ t.state }}">{{ t.state_display }}</span>
+                    </td>
+                    <td class="torrent-table__td">
+                        <div class="torrent-progress">
+                            <div class="torrent-progress__bar torrent-progress__bar--{{ t.state }}"
+                                 style="width: {{ (t.progress * 100) | round(1) }}%"></div>
+                            <span class="torrent-progress__text">{{ (t.progress * 100) | round(1) }}%</span>
+                        </div>
+                    </td>
+                    <td class="torrent-table__td">{{ t.size_formatted }}</td>
+                    <td class="torrent-table__td">{{ t.download_speed_formatted }}</td>
+                    <td class="torrent-table__td">{{ t.upload_speed_formatted }}</td>
+                    <td class="torrent-table__td">{{ t.eta_formatted }}</td>
+                    <td class="torrent-table__td">{{ "%.2f" | format(t.ratio) }}</td>
+                    <td class="torrent-table__td">{{ t.category or "—" }}</td>
+                    <td class="torrent-table__td torrent-table__actions">
+                        {% if t.state in ['pausedDL', 'pausedUP', 'stoppedDL', 'stoppedUP'] %}
+                        <button class="btn btn--sm"
+                                hx-post="/providers/{{ instance_id }}/actions/resume"
+                                hx-vals='{"hashes": "{{ t.hash }}"}'
+                                hx-swap="none">Resume</button>
+                        {% else %}
+                        <button class="btn btn--sm"
+                                hx-post="/providers/{{ instance_id }}/actions/pause"
+                                hx-vals='{"hashes": "{{ t.hash }}"}'
+                                hx-swap="none">Pause</button>
+                        {% endif %}
+                        <button class="btn btn--sm btn--danger"
+                                hx-post="/providers/{{ instance_id }}/actions/delete"
+                                hx-vals='{"hashes": "{{ t.hash }}", "delete_files": "false"}'
+                                hx-confirm="Delete this torrent? This cannot be undone."
+                                hx-swap="none">Del</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="card__empty">No torrents found.</p>
+    {% endif %}
+</div>

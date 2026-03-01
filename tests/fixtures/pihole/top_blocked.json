@@ -1,0 +1,6 @@
+{
+    "domains": [
+        {"domain": "ads.example.com", "count": 2000},
+        {"domain": "tracker.example.net", "count": 1200}
+    ]
+}

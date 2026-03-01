@@ -1,0 +1,12 @@
+[
+    {
+        "id": 5,
+        "title": "Future Film",
+        "year": 2025,
+        "inCinemas": "2025-07-04T00:00:00Z",
+        "physicalRelease": "2025-10-15T00:00:00Z",
+        "digitalRelease": "2025-09-15T00:00:00Z",
+        "monitored": true,
+        "hasFile": false
+    }
+]

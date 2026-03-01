@@ -1,0 +1,16 @@
+{
+    "response": {
+        "result": "success",
+        "message": null,
+        "data": {
+            "tautulli_version": "2.13.4",
+            "pms_name": "MyPlexServer",
+            "pms_version": "1.40.4.8679",
+            "pms_platform": "Linux",
+            "pms_ip": "10.0.0.45",
+            "pms_port": 32400,
+            "pms_is_remote": false,
+            "pms_url": "http://10.0.0.45:32400"
+        }
+    }
+}

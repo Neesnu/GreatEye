@@ -1,0 +1,49 @@
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+    {% set s = instance.summary %}
+    <div class="arr-stats">
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.request_counts.total or 0 }}</span>
+            <span class="arr-stat__label">Requests</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value{% if s.request_counts.pending > 0 %} arr-stat__value--warn{% endif %}">{{ s.request_counts.pending or 0 }}</span>
+            <span class="arr-stat__label">Pending</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value arr-stat__value--ok">{{ s.request_counts.available or 0 }}</span>
+            <span class="arr-stat__label">Available</span>
+        </div>
+    </div>
+
+    {% if s.recent_requests %}
+    <div class="seerr-recent">
+        {% for r in s.recent_requests[:3] %}
+        <div class="seerr-request">
+            <div class="seerr-request__title" title="{{ r.media_title }}">
+                {{ r.media_title | truncate(30) }}
+                {% if r.media_year %}<span class="seerr-request__year">({{ r.media_year }})</span>{% endif %}
+            </div>
+            <div class="seerr-request__meta">
+                <span class="seerr-status seerr-status--{{ r.status | lower }}">{{ r.status }}</span>
+                <span class="seerr-request__by">{{ r.requested_by }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ s.app_name or instance.type_display_name if instance.summary else instance.type_display_name }}</span>
+</div>

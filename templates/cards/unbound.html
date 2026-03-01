@@ -1,0 +1,45 @@
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+    {% set s = instance.summary %}
+    <div class="unbound-hit-rate">
+        <span class="unbound-hit-rate__value{% if s.queries.cache_hit_rate and s.queries.cache_hit_rate > 90 %} unbound-hit-rate__value--good{% endif %}">
+            {{ s.queries.cache_hit_rate or 0 }}%
+        </span>
+        <span class="unbound-hit-rate__label">Cache Hit Rate</span>
+    </div>
+
+    <div class="arr-stats">
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.queries.total or 0 }}</span>
+            <span class="arr-stat__label">Queries</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.performance.recursion_time_avg_ms or 0 }}ms</span>
+            <span class="arr-stat__label">Avg Recursion</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.cache.message_count or 0 }}</span>
+            <span class="arr-stat__label">Cache Entries</span>
+        </div>
+    </div>
+
+    {% if s.security.unwanted_queries > 0 or s.security.unwanted_replies > 0 %}
+    <div class="unbound-security-warn">
+        Unwanted: {{ s.security.unwanted_queries }} queries, {{ s.security.unwanted_replies }} replies
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ instance.type_display_name }}</span>
+</div>

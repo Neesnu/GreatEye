@@ -1,0 +1,10 @@
+{
+    "MediaContainer": {
+        "size": 0,
+        "claimed": true,
+        "machineIdentifier": "abc123def456",
+        "version": "1.40.4.8679",
+        "friendlyName": "MyPlexServer",
+        "platform": "Linux"
+    }
+}

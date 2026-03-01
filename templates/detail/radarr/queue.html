@@ -1,0 +1,51 @@
+{% if detail.queue.records %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Movie</th>
+            <th>Quality</th>
+            <th>Progress</th>
+            <th>Size</th>
+            <th>Time Left</th>
+            <th>Client</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in detail.queue.records %}
+        <tr class="{% if item.error_message %}arr-table__row--error{% endif %}">
+            <td title="{{ item.media_title }} {{ item.detail_title }}">
+                {{ item.media_title | truncate(35) }} {{ item.detail_title }}
+            </td>
+            <td>{{ item.quality }}</td>
+            <td>
+                <div class="arr-queue-item__bar">
+                    <div class="arr-queue-item__progress{% if item.error_message %} arr-queue-item__progress--error{% endif %}"
+                         style="width: {{ item.progress }}%"></div>
+                </div>
+                <span class="arr-queue-item__pct">{{ item.progress }}%</span>
+            </td>
+            <td>{{ item.size_formatted }}</td>
+            <td>{{ item.timeleft or '—' }}</td>
+            <td>{{ item.download_client }}</td>
+            <td>
+                {% if 'radarr.search' in permission_keys or 'system.admin' in permission_keys %}
+                <form hx-post="/providers/{{ instance_id }}/actions/remove_from_queue"
+                      hx-target="#toast-container" hx-swap="innerHTML">
+                    <input type="hidden" name="queue_id" value="{{ item.id }}">
+                    <button type="submit" class="btn btn--sm btn--danger" title="Remove">Remove</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% if item.error_message %}
+        <tr class="arr-table__error-row">
+            <td colspan="7" class="arr-table__error-msg">{{ item.error_message }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">Queue is empty</p>
+{% endif %}

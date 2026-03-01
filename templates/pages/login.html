@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — Great Eye</title>
+    <link rel="stylesheet" href="/static/css/greateye.css">
+    <script src="/static/js/htmx.min.js"></script>
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-card">
+            <h1 class="auth-card__title">Great Eye</h1>
+            <p class="auth-card__subtitle">Sign in to your account</p>
+
+            <form hx-post="/auth/login"
+                  hx-target="#login-error"
+                  hx-swap="innerHTML">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input class="form-input" type="text" id="username"
+                           name="username" required autocomplete="username"
+                           autofocus>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input class="form-input" type="password" id="password"
+                           name="password" required
+                           autocomplete="current-password">
+                </div>
+
+                <div id="login-error" role="alert" aria-live="assertive"></div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn--primary">Sign In</button>
+                </div>
+            </form>
+
+            {% if show_plex %}
+            <div style="text-align: center; margin: var(--space-md) 0; color: var(--text-muted);">or</div>
+            <a href="/auth/plex" class="btn btn--primary" style="text-align: center;">Sign in with Plex</a>
+            {% endif %}
+
+            <p style="text-align: center; margin-top: var(--space-md);">
+                <a href="/auth/reset-request">Forgot password?</a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Great Eye{% endblock %}</title>
+    <link rel="stylesheet" href="/static/css/greateye.css">
+    <script src="/static/js/htmx.min.js"></script>
+    <script src="/static/js/htmx-sse.js"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <button class="sidebar-toggle"
+            aria-label="Toggle navigation"
+            aria-expanded="false"
+            onclick="document.querySelector('.sidebar').classList.toggle('sidebar--open'); this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true')">&#9776;</button>
+
+    <div class="app-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar" aria-label="Main navigation">
+            {% include "partials/sidebar.html" %}
+        </aside>
+
+        <!-- Main content area -->
+        <div class="main-content">
+            <header class="header" aria-label="Page header">
+                <h1 class="header__title">{% block header_title %}Dashboard{% endblock %}</h1>
+                <div class="header__actions">
+                    {% block header_actions %}{% endblock %}
+                </div>
+            </header>
+
+            <main class="content" id="main-content">
+                {% block content %}
+                    {% if content_template is defined %}
+                        {% include content_template %}
+                    {% endif %}
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <div id="toast-container" role="status" aria-live="polite"></div>
+</body>
+</html>

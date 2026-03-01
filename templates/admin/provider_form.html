@@ -1,0 +1,122 @@
+{% if instance %}
+<h2>Edit Provider: {{ instance.display_name }}</h2>
+{% else %}
+<h2>Add Provider</h2>
+{% endif %}
+
+<form {% if instance %}
+        hx-put="{{ form_action }}"
+      {% else %}
+        hx-post="{{ form_action }}"
+      {% endif %}
+      hx-target="#toast-container"
+      hx-swap="beforeend"
+      class="admin-form">
+
+    {% if not instance %}
+    {# Type selector (only for new instances) #}
+    <div class="form-group">
+        <label class="form-label" for="type_id">Provider Type</label>
+        <select class="form-input" id="type_id" name="type_id" required
+                hx-get="/admin/providers/new"
+                hx-target="#main-content"
+                hx-include="[name='type_id']"
+                hx-push-url="false"
+                hx-vals='{}'>
+            <option value="">Select a type...</option>
+            {% for pt in provider_types %}
+            <option value="{{ pt.id }}"
+                    {% if selected_type and selected_type.id == pt.id %}selected{% endif %}>
+                {{ pt.display_name }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    {% else %}
+    <input type="hidden" name="type_id" value="{{ instance.provider_type_id }}">
+    {% endif %}
+
+    <div class="form-group">
+        <label class="form-label" for="display_name">Display Name</label>
+        <input class="form-input" type="text" id="display_name" name="display_name"
+               value="{{ instance.display_name if instance else '' }}"
+               placeholder="e.g. My Sonarr" required>
+    </div>
+
+    {% if config_schema and config_schema.get('fields') %}
+    <fieldset class="admin-fieldset">
+        <legend>Configuration</legend>
+        {% for field in config_schema['fields'] %}
+        <div class="form-group">
+            <label class="form-label" for="config_{{ field.key }}">
+                {{ field.label }}
+                {% if field.get('required') %}<span class="form-required" aria-label="required">*</span>{% endif %}
+            </label>
+
+            {% if field.type == 'boolean' %}
+            <label class="form-checkbox">
+                <input type="checkbox" id="config_{{ field.key }}" name="config_{{ field.key }}"
+                       value="true"
+                       {% if config_values.get(field.key, field.get('default', False)) in (True, 'true', 'True') %}checked{% endif %}>
+                {{ field.get('help_text', '') }}
+            </label>
+
+            {% elif field.type == 'secret' %}
+            <input class="form-input" type="password" id="config_{{ field.key }}"
+                   name="config_{{ field.key }}"
+                   placeholder="{% if instance %}(unchanged){% else %}{{ field.get('help_text', '') }}{% endif %}"
+                   autocomplete="off"
+                   {% if field.get('help_text') and not instance %}aria-describedby="hint_{{ field.key }}"{% endif %}>
+            {% if field.get('help_text') and not instance %}
+            <p class="form-hint" id="hint_{{ field.key }}">{{ field.help_text }}</p>
+            {% endif %}
+
+            {% else %}
+            <input class="form-input" type="text" id="config_{{ field.key }}"
+                   name="config_{{ field.key }}"
+                   value="{{ config_values.get(field.key, field.get('default', '')) }}"
+                   placeholder="{{ field.get('help_text', '') }}"
+                   {% if field.get('required') and not instance %}required{% endif %}
+                   {% if field.get('help_text') %}aria-describedby="hint_{{ field.key }}"{% endif %}>
+            {% if field.get('help_text') %}
+            <p class="form-hint" id="hint_{{ field.key }}">{{ field.help_text }}</p>
+            {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </fieldset>
+    {% endif %}
+
+    {% if instance %}
+    <fieldset class="admin-fieldset">
+        <legend>Polling Intervals</legend>
+        <div class="form-row">
+            <div class="form-group">
+                <label class="form-label" for="health_interval">Health Check (s)</label>
+                <input class="form-input" type="number" id="health_interval"
+                       name="health_interval" value="{{ instance.health_interval }}" min="10">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="summary_interval">Summary Poll (s)</label>
+                <input class="form-input" type="number" id="summary_interval"
+                       name="summary_interval" value="{{ instance.summary_interval }}" min="10">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="detail_cache_ttl">Detail Cache TTL (s)</label>
+                <input class="form-input" type="number" id="detail_cache_ttl"
+                       name="detail_cache_ttl" value="{{ instance.detail_cache_ttl }}" min="10">
+            </div>
+        </div>
+    </fieldset>
+    {% endif %}
+
+    <div class="admin-form-actions">
+        <button type="submit" class="btn btn--primary">
+            {% if instance %}Save Changes{% else %}Create Provider{% endif %}
+        </button>
+        <a class="btn"
+           hx-get="/admin/providers"
+           hx-target="#main-content"
+           hx-push-url="true">Cancel</a>
+    </div>
+</form>

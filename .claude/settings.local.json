@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(py:*)",
+      "Bash(mkdir:*)",
+      "Bash(source:*)",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(rm:*)",
+      "Bash(curl:*)",
+      "Bash(taskkill:*)",
+      "Bash(docker:*)"
+    ]
+  }
+}

@@ -1,0 +1,44 @@
+<div class="detail-tabs">
+    <button class="detail-tab detail-tab--active"
+            data-tab="overview"
+            onclick="switchTab(this, 'overview')">Overview</button>
+    <button class="detail-tab"
+            data-tab="queue"
+            onclick="switchTab(this, 'queue')">Queue</button>
+    <button class="detail-tab"
+            data-tab="missing"
+            onclick="switchTab(this, 'missing')">Missing</button>
+    <button class="detail-tab"
+            data-tab="calendar"
+            onclick="switchTab(this, 'calendar')">Calendar</button>
+</div>
+
+<div id="tab-overview" class="detail-tab-content detail-tab-content--active">
+    {% include "detail/sonarr/overview.html" %}
+</div>
+
+<div id="tab-queue" class="detail-tab-content" style="display: none;">
+    {% include "detail/sonarr/queue.html" %}
+</div>
+
+<div id="tab-missing" class="detail-tab-content" style="display: none;">
+    {% include "detail/sonarr/missing.html" %}
+</div>
+
+<div id="tab-calendar" class="detail-tab-content" style="display: none;">
+    {% include "detail/sonarr/calendar.html" %}
+</div>
+
+<script>
+function switchTab(btn, tabName) {
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('detail-tab--active'));
+    document.querySelectorAll('.detail-tab-content').forEach(c => {
+        c.classList.remove('detail-tab-content--active');
+        c.style.display = 'none';
+    });
+    btn.classList.add('detail-tab--active');
+    var el = document.getElementById('tab-' + tabName);
+    el.classList.add('detail-tab-content--active');
+    el.style.display = '';
+}
+</script>

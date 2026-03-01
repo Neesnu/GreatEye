@@ -1,0 +1,34 @@
+{
+    "MediaContainer": {
+        "size": 3,
+        "Directory": [
+            {
+                "key": "1",
+                "title": "Movies",
+                "type": "movie",
+                "agent": "tv.plex.agents.movie",
+                "scanner": "Plex Movie",
+                "language": "en-US",
+                "count": 450
+            },
+            {
+                "key": "2",
+                "title": "TV Shows",
+                "type": "show",
+                "agent": "tv.plex.agents.series",
+                "scanner": "Plex TV Series",
+                "language": "en-US",
+                "count": 85
+            },
+            {
+                "key": "3",
+                "title": "Music",
+                "type": "artist",
+                "agent": "tv.plex.agents.music",
+                "scanner": "Plex Music",
+                "language": "en-US",
+                "count": 200
+            }
+        ]
+    }
+}

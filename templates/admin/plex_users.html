@@ -1,0 +1,30 @@
+<h2>Approved Plex Users</h2>
+<p style="color: var(--text-secondary); margin-bottom: var(--space-md);">
+    Plex users on this list can sign in via Plex OAuth.
+</p>
+
+{% for au in approved_users %}
+<div style="display: flex; justify-content: space-between; align-items: center; padding: var(--space-sm); border-bottom: 1px solid var(--border-color);">
+    <span>{{ au.plex_username }}</span>
+    <button class="btn"
+            hx-delete="/admin/plex-users/{{ au.id }}"
+            hx-confirm="Remove {{ au.plex_username }}?"
+            hx-target="closest div"
+            hx-swap="outerHTML">Remove</button>
+</div>
+{% else %}
+<p style="color: var(--text-muted);">No approved Plex users yet.</p>
+{% endfor %}
+
+<form hx-post="/admin/plex-users"
+      hx-target="#add-result"
+      hx-swap="innerHTML"
+      style="margin-top: var(--space-lg);">
+    <div class="form-group">
+        <label class="form-label" for="plex_username">Plex Username</label>
+        <input class="form-input" type="text" id="plex_username"
+               name="plex_username" required>
+    </div>
+    <div id="add-result"></div>
+    <button type="submit" class="btn btn--primary">Approve User</button>
+</form>

@@ -1,0 +1,30 @@
+{% if detail.history %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>User</th>
+            <th>Title</th>
+            <th>Type</th>
+            <th>Duration</th>
+            <th>Player</th>
+            <th>Platform</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for h in detail.history %}
+        <tr>
+            <td>{{ h.date }}</td>
+            <td>{{ h.user }}</td>
+            <td title="{{ h.title }}">{{ h.title | truncate(35) }}</td>
+            <td>{{ h.media_type }}</td>
+            <td>{{ (h.play_duration / 60) | round(0) | int }}m</td>
+            <td>{{ h.player }}</td>
+            <td>{{ h.platform }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No history records</p>
+{% endif %}

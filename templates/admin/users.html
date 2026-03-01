@@ -1,0 +1,77 @@
+<h2>Users</h2>
+<p class="admin-subtitle">Manage user accounts and role assignments.</p>
+
+<div class="admin-toolbar">
+    <a class="btn btn--primary"
+       hx-get="/admin/users/new"
+       hx-target="#main-content"
+       hx-push-url="true">Add User</a>
+</div>
+
+{% if users %}
+<div class="admin-table-wrap">
+    <table class="admin-table">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Auth Method</th>
+                <th>Active</th>
+                <th>Force Reset</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.username }}</td>
+                <td>
+                    {% if u.role %}
+                    <span class="badge badge--role">{{ u.role.name }}</span>
+                    {% else %}
+                    <span class="badge badge--unknown">No role</span>
+                    {% endif %}
+                </td>
+                <td>{{ u.auth_method }}</td>
+                <td>
+                    {% if u.is_active %}
+                    <span class="badge badge--up">Active</span>
+                    {% else %}
+                    <span class="badge badge--down">Disabled</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if u.force_reset %}
+                    <span class="badge badge--degraded">Pending</span>
+                    {% else %}
+                    —
+                    {% endif %}
+                </td>
+                <td>{{ u.created_at.strftime("%Y-%m-%d") if u.created_at else "—" }}</td>
+                <td class="admin-actions">
+                    <button class="btn btn--sm"
+                            hx-get="/admin/users/{{ u.id }}/edit"
+                            hx-target="#main-content"
+                            hx-push-url="true">Edit</button>
+                    <button class="btn btn--sm"
+                            hx-post="/admin/users/{{ u.id }}/force-reset"
+                            hx-swap="none">
+                        {% if u.force_reset %}Clear Reset{% else %}Force Reset{% endif %}
+                    </button>
+                    {% if u.id != user.id %}
+                    <button class="btn btn--sm btn--danger"
+                            hx-delete="/admin/users/{{ u.id }}"
+                            hx-confirm="Delete user {{ u.username }}?"
+                            hx-target="closest tr"
+                            hx-swap="outerHTML">Delete</button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<p class="admin-empty">No users found.</p>
+{% endif %}

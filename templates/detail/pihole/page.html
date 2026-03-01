@@ -1,0 +1,37 @@
+<div class="detail-tabs">
+    <button class="detail-tab detail-tab--active"
+            data-tab="overview"
+            onclick="switchTab(this, 'overview')">Overview</button>
+    <button class="detail-tab"
+            data-tab="top-domains"
+            onclick="switchTab(this, 'top-domains')">Top Domains</button>
+    <button class="detail-tab"
+            data-tab="clients"
+            onclick="switchTab(this, 'clients')">Clients</button>
+</div>
+
+<div id="tab-overview" class="detail-tab-content detail-tab-content--active">
+    {% include "detail/pihole/overview.html" %}
+</div>
+
+<div id="tab-top-domains" class="detail-tab-content" style="display: none;">
+    {% include "detail/pihole/top_domains.html" %}
+</div>
+
+<div id="tab-clients" class="detail-tab-content" style="display: none;">
+    {% include "detail/pihole/clients.html" %}
+</div>
+
+<script>
+function switchTab(btn, tabName) {
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('detail-tab--active'));
+    document.querySelectorAll('.detail-tab-content').forEach(c => {
+        c.classList.remove('detail-tab-content--active');
+        c.style.display = 'none';
+    });
+    btn.classList.add('detail-tab--active');
+    var el = document.getElementById('tab-' + tabName);
+    el.classList.add('detail-tab-content--active');
+    el.style.display = '';
+}
+</script>

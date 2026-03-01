@@ -1,0 +1,46 @@
+<div class="card__header">
+    <span class="card__name">{{ instance.display_name }}</span>
+    <span class="health-dot health-dot--{{ instance.health_status }}"
+          title="{{ instance.health_message }}"></span>
+</div>
+<div class="card__body">
+    {% if instance.summary %}
+    {% set s = instance.summary %}
+    <div class="pihole-blocking pihole-blocking--{{ 'active' if s.blocking_enabled else 'disabled' }}">
+        {{ 'Blocking Active' if s.blocking_enabled else 'Blocking Disabled' }}
+    </div>
+
+    <div class="arr-stats">
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.queries.total | default(0) }}</span>
+            <span class="arr-stat__label">Queries</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.queries.blocked | default(0) }}</span>
+            <span class="arr-stat__label">Blocked</span>
+        </div>
+        <div class="arr-stat">
+            <span class="arr-stat__value">{{ s.queries.percent_blocked | default(0) }}%</span>
+            <span class="arr-stat__label">Blocked %</span>
+        </div>
+    </div>
+
+    <div class="pihole-extra">
+        <span title="Domains on blocklist">{{ s.gravity.domains_being_blocked | default(0) }} blocklist domains</span>
+        <span title="Active clients">{{ s.clients.active | default(0) }} active clients</span>
+    </div>
+
+    <div class="pihole-cache">
+        <span>Cached: {{ s.queries.cached | default(0) }}</span>
+        <span>Forwarded: {{ s.queries.forwarded | default(0) }}</span>
+    </div>
+    {% else %}
+    <p class="card__empty">Waiting for data&hellip;</p>
+    {% endif %}
+</div>
+<div class="card__footer">
+    {% if instance.summary_stale %}
+    <span class="card__stale">Stale</span>
+    {% endif %}
+    <span class="card__type">{{ instance.type_display_name }}</span>
+</div>

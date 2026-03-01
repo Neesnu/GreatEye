@@ -1,0 +1,37 @@
+{
+    "response": {
+        "result": "success",
+        "message": null,
+        "data": {
+            "recently_added": [
+                {
+                    "title": "Oppenheimer",
+                    "parent_title": "",
+                    "grandparent_title": "",
+                    "media_type": "movie",
+                    "added_at": "1714300800",
+                    "year": "2023",
+                    "library_name": "Movies"
+                },
+                {
+                    "title": "S05E10",
+                    "parent_title": "Season 5",
+                    "grandparent_title": "Better Call Saul",
+                    "media_type": "episode",
+                    "added_at": "1714214400",
+                    "year": "2022",
+                    "library_name": "TV Shows"
+                },
+                {
+                    "title": "Killers of the Flower Moon",
+                    "parent_title": "",
+                    "grandparent_title": "",
+                    "media_type": "movie",
+                    "added_at": "1714128000",
+                    "year": "2023",
+                    "library_name": "Movies"
+                }
+            ]
+        }
+    }
+}

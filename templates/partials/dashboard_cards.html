@@ -1,0 +1,13 @@
+{% for instance in instances %}
+<div class="card card--{{ instance.health_status }}"
+     id="card-{{ instance.instance_id }}">
+    {% include "partials/card_inner.html" %}
+</div>
+{% endfor %}
+
+{% if not instances %}
+<div class="dashboard-empty">
+    <p>No provider instances configured yet.</p>
+</div>
+{% endif %}
+

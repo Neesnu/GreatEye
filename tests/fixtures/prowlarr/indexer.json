@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "name": "NZBgeek",
+        "protocol": "usenet",
+        "privacy": "private",
+        "enable": true,
+        "priority": 25,
+        "fields": []
+    },
+    {
+        "id": 2,
+        "name": "1337x",
+        "protocol": "torrent",
+        "privacy": "public",
+        "enable": true,
+        "priority": 50,
+        "fields": []
+    },
+    {
+        "id": 3,
+        "name": "OldIndexer",
+        "protocol": "torrent",
+        "privacy": "private",
+        "enable": false,
+        "priority": 25,
+        "fields": []
+    }
+]

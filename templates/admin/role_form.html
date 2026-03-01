@@ -1,0 +1,55 @@
+<h2>Edit Role: {{ role.name }}</h2>
+
+<form hx-put="/admin/roles/{{ role.id }}"
+      hx-target="#toast-container"
+      hx-swap="beforeend"
+      class="admin-form">
+
+    {% if not role.is_system %}
+    <div class="form-group">
+        <label class="form-label" for="name">Role Name</label>
+        <input class="form-input" type="text" id="name" name="name"
+               value="{{ role.name }}" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label" for="description">Description</label>
+        <input class="form-input" type="text" id="description" name="description"
+               value="{{ role.description or '' }}">
+    </div>
+    {% else %}
+    <div class="form-group">
+        <label class="form-label">Role</label>
+        <p class="form-static">{{ role.name }} (system role — name cannot be changed)</p>
+    </div>
+    {% endif %}
+
+    <fieldset class="admin-fieldset">
+        <legend>Permissions</legend>
+        {% for provider_type, perms in perm_groups.items() %}
+        <div class="perm-group">
+            <h4 class="perm-group__title">{{ provider_type }}</h4>
+            {% for perm in perms %}
+            <label class="form-checkbox">
+                <input type="checkbox" name="permission_ids" value="{{ perm.id }}"
+                       {% if perm.key in role_perm_keys %}checked{% endif %}>
+                <span class="perm-label">
+                    {{ perm.display_name }}
+                    <span class="badge badge--{{ perm.category }}">{{ perm.category }}</span>
+                </span>
+                {% if perm.description %}
+                <span class="perm-desc">{{ perm.description }}</span>
+                {% endif %}
+            </label>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </fieldset>
+
+    <div class="admin-form-actions">
+        <button type="submit" class="btn btn--primary">Save Permissions</button>
+        <a class="btn"
+           hx-get="/admin/roles"
+           hx-target="#main-content"
+           hx-push-url="true">Cancel</a>
+    </div>
+</form>

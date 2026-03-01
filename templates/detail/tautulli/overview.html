@@ -1,0 +1,40 @@
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Active Streams</span>
+        <span class="detail-stat__value">{{ detail.activity.stream_count or 0 }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Transcodes</span>
+        <span class="detail-stat__value">{{ detail.activity.stream_count_transcode or 0 }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Libraries</span>
+        <span class="detail-stat__value">{{ detail.libraries | length }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Total Bandwidth</span>
+        <span class="detail-stat__value">{{ detail.activity.total_bandwidth or 0 }} kbps</span>
+    </div>
+</div>
+
+{% if detail.libraries %}
+<h3 class="detail-section-title">Libraries</h3>
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Items</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lib in detail.libraries %}
+        <tr>
+            <td>{{ lib.section_name }}</td>
+            <td>{{ lib.section_type }}</td>
+            <td>{{ lib.count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

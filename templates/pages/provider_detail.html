@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block header_title %}{{ instance.display_name }}{% endblock %}
+
+{% block header_actions %}
+<a href="/dashboard" class="btn btn--sm">Back to Dashboard</a>
+{% endblock %}
+
+{% block content %}
+{% include detail_template %}
+{% endblock %}

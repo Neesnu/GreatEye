@@ -1,0 +1,32 @@
+{% if detail.calendar %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Series</th>
+            <th>Episode</th>
+            <th>Air Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ep in detail.calendar %}
+        <tr>
+            <td title="{{ ep.series_title }}">{{ ep.series_title | truncate(35) }}</td>
+            <td>S{{ '%02d' | format(ep.season_number) }}E{{ '%02d' | format(ep.episode_number) }} - {{ ep.episode_title | truncate(30) }}</td>
+            <td>{{ ep.air_date_utc[:10] if ep.air_date_utc else '—' }}</td>
+            <td>
+                {% if ep.has_file %}
+                <span class="arr-status arr-status--downloaded">Downloaded</span>
+                {% elif ep.monitored %}
+                <span class="arr-status arr-status--monitored">Monitored</span>
+                {% else %}
+                <span class="arr-status arr-status--unmonitored">Unmonitored</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No upcoming episodes</p>
+{% endif %}

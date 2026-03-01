@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block header_title %}Dashboard{% endblock %}
+
+{% block header_actions %}
+<div class="delivery-toggle">
+    {% if delivery_mode == 'sse' %}
+    <span class="delivery-toggle__label">Live</span>
+    <button class="btn btn--sm"
+            hx-post="/preferences/delivery-mode"
+            hx-vals='{"mode": "batch"}'
+            hx-swap="none">Switch to Polling</button>
+    {% else %}
+    <span class="delivery-toggle__label">Polling</span>
+    <button class="btn btn--sm"
+            hx-post="/preferences/delivery-mode"
+            hx-vals='{"mode": "sse"}'
+            hx-swap="none">Switch to Live</button>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block content %}
+{% include "partials/dashboard_content.html" %}
+{% endblock %}

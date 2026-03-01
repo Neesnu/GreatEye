@@ -1,0 +1,42 @@
+<div class="detail-grid">
+    <div class="detail-stat">
+        <span class="detail-stat__label">Total Requests</span>
+        <span class="detail-stat__value">{{ detail.requests.total_records }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Radarr Services</span>
+        <span class="detail-stat__value">{{ detail.services.radarr | length }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Sonarr Services</span>
+        <span class="detail-stat__value">{{ detail.services.sonarr | length }}</span>
+    </div>
+</div>
+
+{% if detail.services.radarr %}
+<h3 class="detail-section-title">Radarr Services</h3>
+<div class="seerr-services">
+    {% for svc in detail.services.radarr %}
+    <div class="seerr-service">
+        <span class="seerr-service__name">{{ svc.name }}</span>
+        <span class="seerr-service__host">{{ svc.hostname }}:{{ svc.port }}</span>
+        {% if svc.is_default %}<span class="seerr-service__default">Default</span>{% endif %}
+        {% if svc.is_4k %}<span class="seerr-service__4k">4K</span>{% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if detail.services.sonarr %}
+<h3 class="detail-section-title">Sonarr Services</h3>
+<div class="seerr-services">
+    {% for svc in detail.services.sonarr %}
+    <div class="seerr-service">
+        <span class="seerr-service__name">{{ svc.name }}</span>
+        <span class="seerr-service__host">{{ svc.hostname }}:{{ svc.port }}</span>
+        {% if svc.is_default %}<span class="seerr-service__default">Default</span>{% endif %}
+        {% if svc.is_4k %}<span class="seerr-service__4k">4K</span>{% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

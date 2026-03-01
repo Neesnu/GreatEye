@@ -1,0 +1,7 @@
+{
+    "clients": [
+        {"name": "desktop-pc", "ip": "10.0.0.100", "count": 5000},
+        {"name": "laptop", "ip": "10.0.0.101", "count": 3000},
+        {"name": "phone", "ip": "10.0.0.102", "count": 1500}
+    ]
+}

@@ -1,0 +1,67 @@
+{% if detail.containers %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Image</th>
+            <th>State</th>
+            <th>Health</th>
+            <th>Status</th>
+            <th>Ports</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in detail.containers %}
+        <tr>
+            <td>{{ c.name }}</td>
+            <td title="{{ c.image }}">{{ c.image | truncate(35) }}</td>
+            <td><span class="docker-state docker-state--{{ c.state }}">{{ c.state_display }}</span></td>
+            <td>
+                {% if c.health %}
+                <span class="docker-health-badge docker-health-badge--{{ c.health }}">{{ c.health }}</span>
+                {% else %}
+                <span class="docker-health-badge docker-health-badge--none">—</span>
+                {% endif %}
+            </td>
+            <td>{{ c.status }}</td>
+            <td>
+                {% for p in c.ports[:3] %}
+                {% if p.public %}{{ p.public }}:{% endif %}{{ p.private }}/{{ p.type }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% if c.state == 'running' %}
+                    {% if 'docker.restart' in permission_keys or 'system.admin' in permission_keys %}
+                    <form hx-post="/providers/{{ instance_id }}/actions/restart_container"
+                          hx-target="#toast-container" hx-swap="innerHTML"
+                          hx-confirm="Restart container '{{ c.name }}'?" style="display: inline;">
+                        <input type="hidden" name="container_id" value="{{ c.id }}">
+                        <button type="submit" class="btn btn--sm" title="Restart">Restart</button>
+                    </form>
+                    {% endif %}
+                    {% if 'docker.startstop' in permission_keys or 'system.admin' in permission_keys %}
+                    <form hx-post="/providers/{{ instance_id }}/actions/stop_container"
+                          hx-target="#toast-container" hx-swap="innerHTML"
+                          hx-confirm="Stop container '{{ c.name }}'?" style="display: inline;">
+                        <input type="hidden" name="container_id" value="{{ c.id }}">
+                        <button type="submit" class="btn btn--sm btn--danger" title="Stop">Stop</button>
+                    </form>
+                    {% endif %}
+                {% elif c.state == 'exited' %}
+                    {% if 'docker.startstop' in permission_keys or 'system.admin' in permission_keys %}
+                    <form hx-post="/providers/{{ instance_id }}/actions/start_container"
+                          hx-target="#toast-container" hx-swap="innerHTML" style="display: inline;">
+                        <input type="hidden" name="container_id" value="{{ c.id }}">
+                        <button type="submit" class="btn btn--sm btn--ok" title="Start">Start</button>
+                    </form>
+                    {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No containers found</p>
+{% endif %}

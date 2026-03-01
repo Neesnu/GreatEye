@@ -1,0 +1,10 @@
+{
+    "rid": 1,
+    "full_update": true,
+    "categories": {
+        "linux": {"name": "linux", "savePath": "/downloads/linux/"},
+        "misc": {"name": "misc", "savePath": "/downloads/misc/"}
+    },
+    "tags": ["iso", "cross-seed"],
+    "torrents": {}
+}

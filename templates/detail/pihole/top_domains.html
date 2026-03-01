@@ -1,0 +1,35 @@
+{% if detail.top_domains %}
+<h3 class="detail-section-title">Top Permitted Domains</h3>
+<table class="arr-table">
+    <thead>
+        <tr><th>Domain</th><th>Queries</th></tr>
+    </thead>
+    <tbody>
+        {% for d in detail.top_domains %}
+        <tr>
+            <td>{{ d.domain | default(d.name | default('—')) }}</td>
+            <td>{{ d.count | default(0) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No data</p>
+{% endif %}
+
+{% if detail.top_blocked %}
+<h3 class="detail-section-title">Top Blocked Domains</h3>
+<table class="arr-table">
+    <thead>
+        <tr><th>Domain</th><th>Hits</th></tr>
+    </thead>
+    <tbody>
+        {% for d in detail.top_blocked %}
+        <tr>
+            <td>{{ d.domain | default(d.name | default('—')) }}</td>
+            <td>{{ d.count | default(0) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}

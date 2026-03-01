@@ -1,0 +1,7 @@
+{
+    "version": {
+        "core": {"version": "6.2", "branch": "master"},
+        "ftl": {"version": "6.3", "branch": "master"},
+        "web": {"version": "6.3", "branch": "master"}
+    }
+}

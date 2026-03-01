@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "name": "Sonarr",
+        "implementation": "Sonarr",
+        "syncLevel": "fullSync",
+        "tags": [1]
+    },
+    {
+        "id": 2,
+        "name": "Radarr",
+        "implementation": "Radarr",
+        "syncLevel": "fullSync",
+        "tags": []
+    }
+]

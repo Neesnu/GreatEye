@@ -1,0 +1,30 @@
+<div class="detail-tabs">
+    <button class="detail-tab detail-tab--active"
+            data-tab="containers"
+            onclick="switchTab(this, 'containers')">Containers</button>
+    <button class="detail-tab"
+            data-tab="system"
+            onclick="switchTab(this, 'system')">System</button>
+</div>
+
+<div id="tab-containers" class="detail-tab-content detail-tab-content--active">
+    {% include "detail/docker/containers.html" %}
+</div>
+
+<div id="tab-system" class="detail-tab-content" style="display: none;">
+    {% include "detail/docker/system.html" %}
+</div>
+
+<script>
+function switchTab(btn, tabName) {
+    document.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('detail-tab--active'));
+    document.querySelectorAll('.detail-tab-content').forEach(c => {
+        c.classList.remove('detail-tab-content--active');
+        c.style.display = 'none';
+    });
+    btn.classList.add('detail-tab--active');
+    var el = document.getElementById('tab-' + tabName);
+    el.classList.add('detail-tab-content--active');
+    el.style.display = '';
+}
+</script>

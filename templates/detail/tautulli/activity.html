@@ -1,0 +1,36 @@
+{% if detail.activity and detail.activity.sessions %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Title</th>
+            <th>State</th>
+            <th>Player</th>
+            <th>Quality</th>
+            <th>Progress</th>
+            <th>Decision</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in detail.activity.sessions %}
+        <tr>
+            <td>{{ s.friendly_name or 'Unknown' }}</td>
+            <td title="{{ s.full_title or s.title }}">{{ (s.full_title or s.title or 'Unknown') | truncate(35) }}</td>
+            <td><span class="plex-session__state plex-session__state--{{ s.state or 'unknown' }}">{{ s.state or 'unknown' }}</span></td>
+            <td>{{ s.player or 'Unknown' }}</td>
+            <td>{{ s.quality_profile or '' }}</td>
+            <td>{{ s.progress_percent or 0 }}%</td>
+            <td>
+                {% if s.transcode_decision and s.transcode_decision != 'direct play' %}
+                <span class="plex-transcode-badge">{{ s.transcode_decision }}</span>
+                {% else %}
+                direct play
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No active streams</p>
+{% endif %}

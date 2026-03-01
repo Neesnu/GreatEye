@@ -1,0 +1,60 @@
+{% set stats = detail.stats %}
+<div class="pihole-blocking pihole-blocking--{{ 'active' if detail.blocking_enabled else 'disabled' }}">
+    {{ 'Blocking Active' if detail.blocking_enabled else 'Blocking Disabled' }}
+</div>
+
+<div class="detail-grid">
+    {% if stats.queries is defined %}
+    <div class="detail-stat">
+        <span class="detail-stat__label">Total Queries</span>
+        <span class="detail-stat__value">{{ stats.queries.total | default(0) }}</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Blocked</span>
+        <span class="detail-stat__value">{{ stats.queries.blocked | default(0) }} ({{ stats.queries.percent_blocked | default(0) }}%)</span>
+    </div>
+    <div class="detail-stat">
+        <span class="detail-stat__label">Unique Domains</span>
+        <span class="detail-stat__value">{{ stats.queries.unique_domains | default(0) }}</span>
+    </div>
+    {% endif %}
+    {% if stats.clients is defined %}
+    <div class="detail-stat">
+        <span class="detail-stat__label">Active Clients</span>
+        <span class="detail-stat__value">{{ stats.clients.active | default(0) }} / {{ stats.clients.total | default(0) }}</span>
+    </div>
+    {% endif %}
+</div>
+
+{% if detail.query_types %}
+<h3 class="detail-section-title">Query Types</h3>
+<div class="pihole-query-types">
+    {% for qtype, count in detail.query_types.items() %}
+    <span class="pihole-query-type">{{ qtype }}: {{ count }}</span>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if detail.upstreams %}
+<h3 class="detail-section-title">Upstream DNS</h3>
+<div class="pihole-upstreams">
+    {% for upstream in detail.upstreams %}
+    <div class="pihole-upstream">
+        <span>{{ upstream.name | default(upstream.ip | default('Unknown')) }}</span>
+        <span>{{ upstream.count | default(0) }} queries</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if detail.version %}
+<h3 class="detail-section-title">Version</h3>
+<div class="plex-server-info">
+    {% for k, v in detail.version.items() %}
+    <div class="plex-server-info__row">
+        <span class="plex-server-info__label">{{ k }}</span>
+        <span class="plex-server-info__value">{{ v }}</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

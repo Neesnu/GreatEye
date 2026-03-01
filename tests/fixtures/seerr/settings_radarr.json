@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "name": "Radarr (1080p)",
+        "isDefault": true,
+        "is4k": false,
+        "hostname": "10.0.0.45",
+        "port": 7878
+    },
+    {
+        "id": 2,
+        "name": "Radarr (4K)",
+        "isDefault": false,
+        "is4k": true,
+        "hostname": "10.0.0.45",
+        "port": 7879
+    }
+]

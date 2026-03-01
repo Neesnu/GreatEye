@@ -1,0 +1,25 @@
+{
+    "page": 1,
+    "pageSize": 50,
+    "sortKey": "date",
+    "sortDirection": "descending",
+    "totalRecords": 2,
+    "records": [
+        {
+            "id": 101,
+            "indexerId": 1,
+            "eventType": "indexerQuery",
+            "date": "2025-05-01T10:30:00Z",
+            "sourceTitle": "Movie.Title.2025.1080p",
+            "successful": true
+        },
+        {
+            "id": 102,
+            "indexerId": 2,
+            "eventType": "indexerRss",
+            "date": "2025-05-01T10:00:00Z",
+            "sourceTitle": "",
+            "successful": false
+        }
+    ]
+}

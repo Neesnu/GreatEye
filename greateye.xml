@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>GreatEye</Name>
+  <Repository>ghcr.io/greateye/greateye:latest</Repository>
+  <Registry>https://github.com/greateye/greateye</Registry>
+  <Branch>
+    <Tag>latest</Tag>
+    <TagDescription>Latest stable release</TagDescription>
+  </Branch>
+  <Branch>
+    <Tag>develop</Tag>
+    <TagDescription>Development builds (may be unstable)</TagDescription>
+  </Branch>
+  <Network>bridge</Network>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/greateye/greateye/issues</Support>
+  <Project>https://github.com/greateye/greateye</Project>
+  <Overview>
+    Great Eye is a unified homelab operations dashboard. Monitor and manage
+    your Sonarr, Radarr, Prowlarr, qBittorrent, Plex, Tautulli, Pi-hole,
+    Unbound, Seerr, and Docker containers from a single dark-themed interface.
+    Features include real-time updates via SSE, role-based access control with
+    Plex OAuth, and provider health monitoring.
+  </Overview>
+  <Category>Tools: Productivity:</Category>
+  <WebUI>http://[IP]:[PORT:8484]/</WebUI>
+  <Icon>https://raw.githubusercontent.com/greateye/greateye/main/static/icons/greateye.png</Icon>
+  <ExtraParams/>
+  <DateInstalled/>
+  <Description>
+    Unified homelab operations dashboard for monitoring and managing
+    media automation, DNS, and container infrastructure.
+  </Description>
+
+  <!-- Port Mapping -->
+  <Config
+    Name="Web UI Port"
+    Target="8484"
+    Default="8484"
+    Mode="tcp"
+    Description="Great Eye web interface port"
+    Type="Port"
+    Display="always"
+    Required="true"
+    Mask="false">8484</Config>
+
+  <!-- Persistent Data -->
+  <Config
+    Name="Config Path"
+    Target="/config"
+    Default="/mnt/user/appdata/greateye"
+    Mode="rw"
+    Description="Persistent configuration and database storage"
+    Type="Path"
+    Display="always"
+    Required="true"
+    Mask="false">/mnt/user/appdata/greateye</Config>
+
+  <!-- Docker Socket (Optional) -->
+  <Config
+    Name="Docker Socket"
+    Target="/var/run/docker.sock"
+    Default="/var/run/docker.sock"
+    Mode="ro"
+    Description="Docker socket for container monitoring (read-only). Set to rw for container restart capability."
+    Type="Path"
+    Display="always"
+    Required="false"
+    Mask="false">/var/run/docker.sock</Config>
+
+  <!-- Required Environment Variables -->
+  <Config
+    Name="SECRET_KEY"
+    Target="SECRET_KEY"
+    Default=""
+    Description="Encryption key for sensitive data. REQUIRED. Generate with: python -c 'import secrets; print(secrets.token_hex(32))'. If changed, all encrypted provider configs are lost."
+    Type="Variable"
+    Display="always"
+    Required="true"
+    Mask="true"/>
+
+  <!-- Plex OAuth (Optional) -->
+  <Config
+    Name="PLEX_CLIENT_ID"
+    Target="PLEX_CLIENT_ID"
+    Default=""
+    Description="Plex application client ID for OAuth. Required if using Plex sign-in. Register at https://www.plex.tv/claim/"
+    Type="Variable"
+    Display="always"
+    Required="false"
+    Mask="false"/>
+
+  <!-- User/Group ID -->
+  <Config
+    Name="PUID"
+    Target="PUID"
+    Default="99"
+    Description="User ID for file permissions (99 = nobody on Unraid)"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">99</Config>
+
+  <Config
+    Name="PGID"
+    Target="PGID"
+    Default="100"
+    Description="Group ID for file permissions (100 = users on Unraid)"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">100</Config>
+
+  <!-- Optional Environment Variables -->
+  <Config
+    Name="TZ"
+    Target="TZ"
+    Default="America/New_York"
+    Description="Timezone for the container"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">America/New_York</Config>
+
+  <Config
+    Name="LOG_LEVEL"
+    Target="LOG_LEVEL"
+    Default="INFO"
+    Description="Logging level (DEBUG, INFO, WARNING, ERROR)"
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false">INFO</Config>
+
+</Container>

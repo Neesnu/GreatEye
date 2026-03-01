@@ -1,0 +1,14 @@
+{
+    "dl_info_speed": 15728640,
+    "dl_info_data": 53687091200,
+    "up_info_speed": 5242880,
+    "up_info_data": 21474836480,
+    "dl_rate_limit": 0,
+    "up_rate_limit": 0,
+    "dht_nodes": 450,
+    "connection_status": "connected",
+    "free_space_on_disk": 1099511627776,
+    "use_alt_speed_limits": false,
+    "alltime_dl": 2199023255552,
+    "alltime_ul": 1099511627776
+}

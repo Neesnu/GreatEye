@@ -1,0 +1,39 @@
+{% if delivery_mode == 'sse' %}
+<div id="dashboard-grid" class="dashboard-grid"
+     hx-ext="sse"
+     sse-connect="/dashboard/stream">
+
+    {% for instance in instances %}
+    <div class="card card--{{ instance.health_status }}"
+         id="card-{{ instance.instance_id }}"
+         sse-swap="summary:{{ instance.instance_id }}"
+         hx-swap="innerHTML">
+        {% include "partials/card_inner.html" %}
+    </div>
+    {% endfor %}
+
+    {% if not instances %}
+    <div class="dashboard-empty">
+        <p>No provider instances configured yet.</p>
+        {% if user.role and user.role.name == 'admin' %}
+        <p>
+            <a class="btn btn--primary" style="width:auto; margin-top: var(--space-md);"
+               hx-get="/admin/providers/new"
+               hx-target="#main-content"
+               hx-push-url="true">Add your first provider</a>
+        </p>
+        {% else %}
+        <p>Contact your administrator to configure providers.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% else %}
+<div id="dashboard-grid" class="dashboard-grid"
+     hx-get="/dashboard/cards"
+     hx-trigger="every 60s"
+     hx-swap="innerHTML">
+
+    {% include "partials/dashboard_cards.html" %}
+</div>
+{% endif %}

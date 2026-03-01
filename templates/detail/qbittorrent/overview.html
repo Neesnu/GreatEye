@@ -1,0 +1,58 @@
+<div class="detail-section">
+    <h3 class="detail-section__title">Transfer Statistics</h3>
+    {% if detail and detail.transfer %}
+    {% set t = detail.transfer %}
+    <div class="detail-grid">
+        <div class="detail-stat">
+            <span class="detail-stat__label">Download Speed</span>
+            <span class="detail-stat__value">{{ t.download_speed | format_speed }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">Upload Speed</span>
+            <span class="detail-stat__value">{{ t.upload_speed | format_speed }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">Session Downloaded</span>
+            <span class="detail-stat__value">{{ t.download_session | format_bytes }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">Session Uploaded</span>
+            <span class="detail-stat__value">{{ t.upload_session | format_bytes }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">All-time Downloaded</span>
+            <span class="detail-stat__value">{{ t.download_total | format_bytes }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">All-time Uploaded</span>
+            <span class="detail-stat__value">{{ t.upload_total | format_bytes }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">Free Disk Space</span>
+            <span class="detail-stat__value">{{ t.free_disk_space | format_bytes }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">DHT Nodes</span>
+            <span class="detail-stat__value">{{ t.dht_nodes }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">Connection</span>
+            <span class="detail-stat__value">{{ t.connection_status }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">Alt Speed</span>
+            <span class="detail-stat__value">{{ "On" if t.alt_speed_enabled else "Off" }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">DL Limit</span>
+            <span class="detail-stat__value">{{ t.download_limit | format_speed if t.download_limit > 0 else "Unlimited" }}</span>
+        </div>
+        <div class="detail-stat">
+            <span class="detail-stat__label">UL Limit</span>
+            <span class="detail-stat__value">{{ t.upload_limit | format_speed if t.upload_limit > 0 else "Unlimited" }}</span>
+        </div>
+    </div>
+    {% else %}
+    <p class="card__empty">No transfer data available.</p>
+    {% endif %}
+</div>

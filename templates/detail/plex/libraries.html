@@ -1,0 +1,32 @@
+{% if detail.libraries %}
+<table class="arr-table">
+    <thead>
+        <tr>
+            <th>Library</th>
+            <th>Type</th>
+            <th>Items</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for lib in detail.libraries %}
+        <tr>
+            <td>{{ lib.title }}</td>
+            <td>{{ lib.type }}</td>
+            <td>{{ lib.count }}</td>
+            <td>
+                {% if 'plex.scan' in permission_keys or 'system.admin' in permission_keys %}
+                <form hx-post="/providers/{{ instance_id }}/actions/scan_library"
+                      hx-target="#toast-container" hx-swap="innerHTML">
+                    <input type="hidden" name="section_id" value="{{ lib.id }}">
+                    <button type="submit" class="btn btn--sm" title="Scan">Scan</button>
+                </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p class="detail-empty">No libraries found</p>
+{% endif %}

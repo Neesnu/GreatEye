@@ -1,0 +1,9 @@
+{
+    "Version": "24.0.7",
+    "ApiVersion": "1.43",
+    "MinAPIVersion": "1.12",
+    "Os": "linux",
+    "Arch": "amd64",
+    "KernelVersion": "5.15.0-unraid",
+    "BuildTime": "2024-01-01T00:00:00.000000000+00:00"
+}
