@@ -5,6 +5,7 @@
     <a class="btn btn--primary"
        hx-get="/admin/providers/new"
        hx-target="#main-content"
+       hx-swap="innerHTML"
        hx-push-url="true">Add Provider</a>
 </div>
 
@@ -40,6 +41,7 @@
                     <button class="btn btn--sm"
                             hx-get="/admin/providers/{{ item.instance.id }}/edit"
                             hx-target="#main-content"
+                            hx-swap="innerHTML"
                             hx-push-url="true">Edit</button>
                     <button class="btn btn--sm"
                             hx-post="/admin/providers/{{ item.instance.id }}/test"

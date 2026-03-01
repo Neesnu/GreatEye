@@ -22,13 +22,13 @@
     {% if user is defined and user.role and user.role.name == 'admin' %}
     <div class="sidebar__section-title">Admin</div>
     <a href="/admin/settings" class="sidebar__link"
-       hx-get="/admin/settings" hx-target="#main-content" hx-push-url="true">Settings</a>
+       hx-get="/admin/settings" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">Settings</a>
     <a href="/admin/providers" class="sidebar__link"
-       hx-get="/admin/providers" hx-target="#main-content" hx-push-url="true">Providers</a>
+       hx-get="/admin/providers" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">Providers</a>
     <a href="/admin/users" class="sidebar__link"
-       hx-get="/admin/users" hx-target="#main-content" hx-push-url="true">Users</a>
+       hx-get="/admin/users" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">Users</a>
     <a href="/admin/roles" class="sidebar__link"
-       hx-get="/admin/roles" hx-target="#main-content" hx-push-url="true">Roles</a>
+       hx-get="/admin/roles" hx-target="#main-content" hx-swap="innerHTML" hx-push-url="true">Roles</a>
     {% endif %}
 </nav>
 
