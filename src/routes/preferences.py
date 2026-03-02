@@ -32,7 +32,8 @@ async def set_delivery_mode(
         session = result.scalar_one_or_none()
         if session:
             session.delivery_mode = mode
+            await db.commit()
 
     logger.info("delivery_mode_changed", user_id=user.id, mode=mode)
 
-    return HTMLResponse("<script>window.location.reload();</script>")
+    return HTMLResponse("", headers={"HX-Refresh": "true"})
