@@ -1,0 +1,136 @@
+{# Manual Import Preview — Sonarr #}
+<div class="manual-import">
+    <div class="manual-import__header">
+        <h3 class="detail-section-title" style="margin-top: 0;">Manual Import</h3>
+        <button class="btn btn--sm"
+                onclick="window.location.reload()"
+                title="Return to queue view">Back to Queue</button>
+    </div>
+
+    <p class="manual-import__info">
+        {{ files | length }} file(s) found &mdash; review matches and select files to import.
+    </p>
+
+    <form hx-post="/providers/{{ instance_id }}/manual-import"
+          hx-target="#toast-container"
+          hx-swap="innerHTML"
+          id="manual-import-form">
+        <input type="hidden" name="import_mode" value="auto">
+        <input type="hidden" name="file_count" value="{{ files | length }}">
+
+        <table class="arr-table manual-import__table">
+            <thead>
+                <tr>
+                    <th style="width: 30px;">
+                        <input type="checkbox" id="mi-select-all" checked
+                               onchange="toggleAllImportFiles(this)">
+                    </th>
+                    <th>File</th>
+                    <th>Series</th>
+                    <th>Episode</th>
+                    <th>Quality</th>
+                    <th>Languages</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr class="{% if file.has_rejections %}arr-table__row--error{% endif %}">
+                    <td>
+                        <input type="checkbox" name="file_enabled_{{ loop.index0 }}"
+                               value="1" checked class="mi-file-checkbox">
+                    </td>
+                    <td class="manual-import__filename" title="{{ file.path }}">
+                        {{ file.relative_path or file.name }}
+                        <div class="manual-import__filesize">{{ file.size_formatted }}</div>
+                    </td>
+                    <td>
+                        {% if detail.series is defined and detail.series %}
+                        <select name="series_id_{{ loop.index0 }}" class="form-input form-input--sm"
+                                hx-get="/providers/{{ instance_id }}/manual-import/episodes"
+                                hx-target="#episodes-{{ loop.index0 }}"
+                                hx-swap="innerHTML"
+                                hx-trigger="change"
+                                hx-include="this"
+                                hx-vals='js:{"series_id": event.target.value}'>
+                            <option value="">-- Select --</option>
+                            {% for s in detail.series %}
+                            <option value="{{ s.id }}"
+                                    {% if s.id == file.series_id %}selected{% endif %}>
+                                {{ s.title }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        {% else %}
+                        <span>{{ file.series_title }}</span>
+                        <input type="hidden" name="series_id_{{ loop.index0 }}" value="{{ file.series_id }}">
+                        {% endif %}
+                    </td>
+                    <td>
+                        <select name="episode_ids_{{ loop.index0 }}" id="episodes-{{ loop.index0 }}"
+                                class="form-input form-input--sm">
+                            {% for ep in file.episode_labels %}
+                            <option value="{{ ep.id }}" selected>{{ ep.label }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <span class="manual-import__quality">{{ file.quality_name }}</span>
+                    </td>
+                    <td>
+                        <span class="manual-import__languages">
+                            {{ file.language_names | join(', ') }}
+                        </span>
+                    </td>
+                    <td>
+                        {% if file.has_rejections %}
+                            <span class="arr-status arr-status--error" title="Has rejections">Rejected</span>
+                        {% else %}
+                            <span class="arr-status arr-status--downloaded">OK</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if file.rejections %}
+                <tr class="arr-table__error-row">
+                    <td colspan="7" class="arr-table__error-msg">
+                        {% for r in file.rejections %}
+                            {{ r.reason }}{% if not loop.last %}; {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endif %}
+                {# Hidden fields carrying full quality/language JSON per file #}
+                <tr style="display: none;">
+                    <td colspan="7">
+                        <input type="hidden" name="file_path_{{ loop.index0 }}" value="{{ file.path }}">
+                        <input type="hidden" name="file_quality_{{ loop.index0 }}"
+                               value="{{ file.quality | tojson | e }}">
+                        <input type="hidden" name="file_languages_{{ loop.index0 }}"
+                               value="{{ file.languages | tojson | e }}">
+                        <input type="hidden" name="file_release_group_{{ loop.index0 }}"
+                               value="{{ file.release_group }}">
+                        <input type="hidden" name="file_download_id_{{ loop.index0 }}"
+                               value="{{ file.download_id }}">
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="manual-import__actions">
+            <button type="submit" class="btn btn--primary btn--sm">
+                Import Selected Files
+            </button>
+            <button type="button" class="btn btn--sm"
+                    onclick="window.location.reload()">Cancel</button>
+        </div>
+    </form>
+</div>
+
+<script>
+function toggleAllImportFiles(checkbox) {
+    document.querySelectorAll('.mi-file-checkbox').forEach(function(cb) {
+        cb.checked = checkbox.checked;
+    });
+}
+</script>

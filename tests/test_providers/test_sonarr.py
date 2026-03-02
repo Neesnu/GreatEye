@@ -433,6 +433,102 @@ class TestActions:
 
 
 # ---------------------------------------------------------------------------
+# Manual Import
+# ---------------------------------------------------------------------------
+
+class TestManualImport:
+    @pytest.mark.asyncio
+    async def test_manual_import_preview(self):
+        preview_data = load_fixture("sonarr", "manualimport_preview")
+        responses = _default_responses()
+        responses["/api/v3/manualimport"] = {"status": 200, "json": preview_data}
+        provider = _make_provider(responses)
+        result = await provider._fetch_manual_import_preview("abc123def456")
+        assert len(result) == 2
+        assert result[0]["series"]["title"] == "The Last of Us"
+
+    @pytest.mark.asyncio
+    async def test_manual_import_preview_empty(self):
+        responses = _default_responses()
+        responses["/api/v3/manualimport"] = {"status": 200, "json": []}
+        provider = _make_provider(responses)
+        result = await provider._fetch_manual_import_preview("nonexistent")
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_manual_import_preview_error(self):
+        responses = _default_responses()
+        responses["/api/v3/manualimport"] = {"status": 500, "json": {}}
+        provider = _make_provider(responses)
+        result = await provider._fetch_manual_import_preview("abc")
+        assert result == []
+
+    def test_normalize_manual_import_file(self):
+        preview_data = load_fixture("sonarr", "manualimport_preview")
+        provider = _make_provider()
+        normalized = provider._normalize_manual_import_file(preview_data[0])
+        assert normalized["series_title"] == "The Last of Us"
+        assert normalized["series_id"] == 2
+        assert normalized["episode_ids"] == [501]
+        assert normalized["quality_name"] == "HDTV-1080p"
+        assert normalized["language_names"] == ["English"]
+        assert normalized["has_rejections"] is False
+
+    def test_normalize_manual_import_file_with_rejections(self):
+        preview_data = load_fixture("sonarr", "manualimport_preview")
+        provider = _make_provider()
+        normalized = provider._normalize_manual_import_file(preview_data[1])
+        assert normalized["has_rejections"] is True
+        assert len(normalized["rejections"]) == 1
+        assert "sample" in normalized["rejections"][0]["reason"].lower()
+
+    @pytest.mark.asyncio
+    async def test_manual_import_execute(self):
+        responses = _default_responses()
+        provider = _make_provider(responses)
+        files = [{
+            "path": "/downloads/tv/episode.mkv",
+            "seriesId": 2,
+            "episodeIds": [501],
+            "quality": {"quality": {"id": 3, "name": "HDTV-1080p"}, "revision": {"version": 1}},
+            "languages": [{"id": 1, "name": "English"}],
+            "releaseGroup": "x264",
+            "downloadId": "abc123def456",
+        }]
+        result = await provider._execute_manual_import(files)
+        assert result.success is True
+        assert "ManualImport" in result.message
+
+    @pytest.mark.asyncio
+    async def test_manual_import_action_no_files(self):
+        provider = _make_provider()
+        result = await provider.execute_action("manual_import", {"file_count": "0"})
+        assert result.success is False
+
+    def test_download_id_in_queue_record(self):
+        """Verify download_id is included in normalized queue records."""
+        provider = _make_provider()
+        record = {
+            "id": 101,
+            "series": {"id": 2, "title": "Test"},
+            "episode": {"id": 501, "seasonNumber": 1, "episodeNumber": 1, "title": "Pilot"},
+            "quality": {"quality": {"id": 3, "name": "HDTV-1080p"}},
+            "customFormats": [],
+            "size": 1000, "sizeleft": 500,
+            "status": "downloading",
+            "trackedDownloadStatus": "ok",
+            "trackedDownloadState": "importing",
+            "statusMessages": [],
+            "downloadClient": "qBit",
+            "indexer": "Prowlarr",
+            "outputPath": "/downloads/",
+            "downloadId": "abc123",
+        }
+        result = provider._normalize_queue_record(record)
+        assert result["download_id"] == "abc123"
+
+
+# ---------------------------------------------------------------------------
 # Validate Config (inherited from ArrBaseProvider)
 # ---------------------------------------------------------------------------
 

@@ -6,7 +6,7 @@ Works for all provider types — templates are resolved by type_id.
 from pathlib import Path
 
 import structlog
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
@@ -117,3 +117,137 @@ async def provider_action(
             f'<div class="toast toast--error">{result.message}</div>',
             status_code=400,
         )
+
+
+# ------------------------------------------------------------------
+# Manual Import
+# ------------------------------------------------------------------
+
+
+@router.get("/{instance_id}/manual-import", response_class=HTMLResponse)
+async def manual_import_preview(
+    request: Request,
+    instance_id: int,
+    download_id: str = Query(...),
+    user: User = Depends(get_current_user),
+) -> HTMLResponse:
+    """Render manual import preview for a download."""
+    provider = registry.get_instance(instance_id)
+    if provider is None:
+        return HTMLResponse("Provider not found", status_code=404)
+
+    meta = provider.meta()
+    import_perm = f"{meta.type_id}.import"
+    permission_keys = getattr(user, "permission_keys", set())
+    if import_perm not in permission_keys and "system.admin" not in permission_keys:
+        return HTMLResponse("Forbidden", status_code=403)
+
+    if not hasattr(provider, "_fetch_manual_import_preview"):
+        return HTMLResponse("Manual import not supported for this provider", status_code=400)
+
+    raw_files = await provider._fetch_manual_import_preview(download_id)
+    if not raw_files:
+        return HTMLResponse(
+            '<div class="toast toast--error">No importable files found for this download</div>',
+        )
+
+    files = [provider._normalize_manual_import_file(f) for f in raw_files]
+
+    detail_result = await registry.get_detail(instance_id)
+    detail = detail_result.data if detail_result else {}
+
+    context = {
+        "request": request,
+        "instance_id": instance_id,
+        "type_id": meta.type_id,
+        "download_id": download_id,
+        "files": files,
+        "detail": detail,
+        "permission_keys": permission_keys,
+    }
+
+    template_name = f"detail/{meta.type_id}/manual_import.html"
+    return HTMLResponse(
+        templates.get_template(template_name).render(context)
+    )
+
+
+@router.post("/{instance_id}/manual-import", response_class=HTMLResponse)
+async def manual_import_execute(
+    request: Request,
+    instance_id: int,
+    user: User = Depends(get_current_user),
+) -> HTMLResponse:
+    """Execute manual import with user-confirmed file list."""
+    provider = registry.get_instance(instance_id)
+    if provider is None:
+        return HTMLResponse("Provider not found", status_code=404)
+
+    meta = provider.meta()
+    import_perm = f"{meta.type_id}.import"
+    permission_keys = getattr(user, "permission_keys", set())
+    if import_perm not in permission_keys and "system.admin" not in permission_keys:
+        return HTMLResponse("Forbidden", status_code=403)
+
+    form = await request.form()
+    params = dict(form)
+
+    result = await registry.execute_action(instance_id, "manual_import", params, user.id)
+
+    if result.success:
+        return HTMLResponse(
+            f'<div class="toast toast--success">{result.message}</div>',
+            headers={"HX-Trigger": "actionComplete"},
+        )
+    else:
+        return HTMLResponse(
+            f'<div class="toast toast--error">{result.message}</div>',
+            status_code=400,
+        )
+
+
+@router.get("/{instance_id}/manual-import/episodes", response_class=HTMLResponse)
+async def manual_import_episodes(
+    request: Request,
+    instance_id: int,
+    series_id: int = Query(...),
+    user: User = Depends(get_current_user),
+) -> HTMLResponse:
+    """Return episode <option> list for a series (Sonarr dependent select)."""
+    provider = registry.get_instance(instance_id)
+    if provider is None:
+        return HTMLResponse("Provider not found", status_code=404)
+
+    meta = provider.meta()
+    if meta.type_id != "sonarr":
+        return HTMLResponse("Not applicable", status_code=400)
+
+    import_perm = f"{meta.type_id}.import"
+    permission_keys = getattr(user, "permission_keys", set())
+    if import_perm not in permission_keys and "system.admin" not in permission_keys:
+        return HTMLResponse("Forbidden", status_code=403)
+
+    provider._ensure_headers()
+    try:
+        response = await provider.http_client.get(
+            f"{provider.api_base}/episode",
+            params={"seriesId": series_id},
+        )
+        if response.status_code != 200:
+            return HTMLResponse('<option value="">Error loading episodes</option>')
+
+        episodes = response.json()
+        options_html = ""
+        for ep in sorted(episodes, key=lambda e: (e.get("seasonNumber", 0), e.get("episodeNumber", 0))):
+            ep_id = ep.get("id", "")
+            s = ep.get("seasonNumber", 0)
+            e = ep.get("episodeNumber", 0)
+            title = ep.get("title", "")
+            label = f"S{s:02d}E{e:02d}"
+            if title:
+                label += f" - {title}"
+            options_html += f'<option value="{ep_id}">{label}</option>\n'
+
+        return HTMLResponse(options_html)
+    except Exception:
+        return HTMLResponse('<option value="">Error loading episodes</option>')

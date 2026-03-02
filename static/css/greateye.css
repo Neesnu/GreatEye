@@ -1155,6 +1155,76 @@ a:hover {
 }
 
 /* ============================================================
+   Manual Import
+   ============================================================ */
+.manual-import {
+    padding: var(--spacing-sm) 0;
+}
+
+.manual-import__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.manual-import__info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.manual-import__table .form-input--sm {
+    padding: var(--spacing-xs);
+    font-size: 0.75rem;
+    min-width: 140px;
+}
+
+.form-input--sm {
+    padding: var(--spacing-xs);
+    font-size: 0.75rem;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+}
+
+.manual-import__filename {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.manual-import__filesize {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+.manual-import__quality,
+.manual-import__languages {
+    font-size: 0.8rem;
+}
+
+.manual-import__actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--border-subtle);
+}
+
+.arr-status--error {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--color-danger);
+}
+
+.arr-status--warning {
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--color-warning);
+}
+
+/* ============================================================
    Prowlarr Styles
    ============================================================ */
 .prowlarr-activity {

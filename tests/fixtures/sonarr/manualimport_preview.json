@@ -1,0 +1,56 @@
+[
+    {
+        "path": "/downloads/tv/The.Last.of.Us.S02E04.1080p.WEB.x264/episode.mkv",
+        "relativePath": "episode.mkv",
+        "name": "The.Last.of.Us.S02E04.1080p.WEB.x264",
+        "size": 1073741824,
+        "series": {
+            "id": 2,
+            "title": "The Last of Us"
+        },
+        "episodes": [
+            {
+                "id": 501,
+                "seasonNumber": 2,
+                "episodeNumber": 4,
+                "title": "Kin"
+            }
+        ],
+        "quality": {
+            "quality": {"id": 3, "name": "HDTV-1080p", "source": "television", "resolution": 1080},
+            "revision": {"version": 1, "real": 0, "isRepack": false}
+        },
+        "languages": [{"id": 1, "name": "English"}],
+        "releaseGroup": "x264",
+        "rejections": [],
+        "downloadId": "abc123def456"
+    },
+    {
+        "path": "/downloads/tv/The.Last.of.Us.S02E04.1080p.WEB.x264/sample.mkv",
+        "relativePath": "sample.mkv",
+        "name": "sample",
+        "size": 52428800,
+        "series": {
+            "id": 2,
+            "title": "The Last of Us"
+        },
+        "episodes": [
+            {
+                "id": 501,
+                "seasonNumber": 2,
+                "episodeNumber": 4,
+                "title": "Kin"
+            }
+        ],
+        "quality": {
+            "quality": {"id": 3, "name": "HDTV-1080p", "source": "television", "resolution": 1080},
+            "revision": {"version": 1, "real": 0, "isRepack": false}
+        },
+        "languages": [{"id": 1, "name": "English"}],
+        "releaseGroup": "",
+        "rejections": [
+            {"reason": "Unable to determine if file is a sample", "type": "permanent"}
+        ],
+        "downloadId": "abc123def456"
+    }
+]

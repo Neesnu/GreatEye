@@ -259,6 +259,52 @@ class ArrBaseProvider(BaseProvider):
             return ActionResult(success=False, message=f"Grab failed: {str(e)}")
 
     # ------------------------------------------------------------------
+    # Manual Import (shared)
+    # ------------------------------------------------------------------
+
+    async def _fetch_manual_import_preview(
+        self, download_id: str
+    ) -> list[dict[str, Any]]:
+        """Fetch manual import file preview for a download.
+
+        GET {api_base}/manualimport?downloadId={download_id}&filterExistingFiles=true
+        """
+        self._ensure_headers()
+        try:
+            response = await self.http_client.get(
+                f"{self.api_base}/manualimport",
+                params={
+                    "downloadId": download_id,
+                    "filterExistingFiles": True,
+                },
+            )
+            if response.status_code != 200:
+                logger.warning(
+                    "manual_import_preview_failed",
+                    instance_id=self.instance_id,
+                    status=response.status_code,
+                )
+                return []
+            return response.json()
+        except Exception as e:
+            logger.warning(
+                "manual_import_preview_error",
+                instance_id=self.instance_id,
+                error=str(e),
+            )
+            return []
+
+    async def _execute_manual_import(
+        self, files: list[dict[str, Any]], import_mode: str = "auto"
+    ) -> ActionResult:
+        """Execute a manual import command with user-confirmed file list."""
+        return await self._execute_command(
+            "ManualImport",
+            importMode=import_mode,
+            files=files,
+        )
+
+    # ------------------------------------------------------------------
     # Disk Space (shared)
     # ------------------------------------------------------------------
 

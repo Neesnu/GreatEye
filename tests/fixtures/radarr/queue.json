@@ -34,7 +34,8 @@
             "statusMessages": [],
             "downloadClient": "qBittorrent",
             "indexer": "Prowlarr",
-            "outputPath": "/00_media/downloads/movies/"
+            "outputPath": "/00_media/downloads/movies/",
+            "downloadId": "movie123abc456"
         }
     ]
 }

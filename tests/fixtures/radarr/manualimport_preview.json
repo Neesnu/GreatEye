@@ -1,0 +1,42 @@
+[
+    {
+        "path": "/downloads/movies/Upcoming.Movie.2025.1080p.BluRay.x265/movie.mkv",
+        "relativePath": "movie.mkv",
+        "name": "Upcoming.Movie.2025.1080p.BluRay.x265",
+        "size": 4294967296,
+        "movie": {
+            "id": 3,
+            "title": "Upcoming Movie",
+            "year": 2025
+        },
+        "quality": {
+            "quality": {"id": 7, "name": "Bluray-1080p", "source": "bluray", "resolution": 1080},
+            "revision": {"version": 1, "real": 0, "isRepack": false}
+        },
+        "languages": [{"id": 1, "name": "English"}],
+        "releaseGroup": "x265",
+        "rejections": [],
+        "downloadId": "movie123abc456"
+    },
+    {
+        "path": "/downloads/movies/Upcoming.Movie.2025.1080p.BluRay.x265/sample.mkv",
+        "relativePath": "sample.mkv",
+        "name": "sample",
+        "size": 52428800,
+        "movie": {
+            "id": 3,
+            "title": "Upcoming Movie",
+            "year": 2025
+        },
+        "quality": {
+            "quality": {"id": 7, "name": "Bluray-1080p", "source": "bluray", "resolution": 1080},
+            "revision": {"version": 1, "real": 0, "isRepack": false}
+        },
+        "languages": [{"id": 1, "name": "English"}],
+        "releaseGroup": "",
+        "rejections": [
+            {"reason": "Unable to determine if file is a sample", "type": "permanent"}
+        ],
+        "downloadId": "movie123abc456"
+    }
+]

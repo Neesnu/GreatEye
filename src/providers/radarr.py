@@ -1,6 +1,7 @@
 """Radarr provider — connects to Radarr API v3 for movie management."""
 
 import asyncio
+import json as json_mod
 from datetime import datetime, timedelta
 from typing import Any
 
@@ -59,6 +60,7 @@ class RadarrProvider(ArrBaseProvider):
                 PermissionDef("radarr.search", "Search for Movies", "Trigger automatic movie search", "action"),
                 PermissionDef("radarr.refresh", "Refresh Movie", "Refresh movie metadata/disk scan", "action"),
                 PermissionDef("radarr.delete", "Delete Movie", "Remove movie (+ files optionally)", "admin"),
+                PermissionDef("radarr.import", "Manual Import", "Import downloaded files", "action"),
             ],
         )
 
@@ -108,6 +110,33 @@ class RadarrProvider(ArrBaseProvider):
             "download_client": record.get("downloadClient", ""),
             "indexer": record.get("indexer", ""),
             "output_path": record.get("outputPath", ""),
+            "download_id": record.get("downloadId", ""),
+        }
+
+    def _normalize_manual_import_file(self, raw: dict[str, Any]) -> dict[str, Any]:
+        """Normalize a single manual import preview file for Radarr."""
+        movie = raw.get("movie") or {}
+        quality = raw.get("quality", {})
+        languages = raw.get("languages", [])
+        rejections = raw.get("rejections", [])
+
+        return {
+            "path": raw.get("path", ""),
+            "relative_path": raw.get("relativePath", ""),
+            "name": raw.get("name", ""),
+            "size": raw.get("size", 0),
+            "size_formatted": format_bytes(raw.get("size", 0)),
+            "movie_id": movie.get("id"),
+            "movie_title": movie.get("title", "Unknown"),
+            "movie_year": movie.get("year", 0),
+            "quality": quality,
+            "quality_name": quality.get("quality", {}).get("name", "Unknown"),
+            "languages": languages,
+            "language_names": [lang.get("name", "Unknown") for lang in languages],
+            "release_group": raw.get("releaseGroup", ""),
+            "rejections": rejections,
+            "has_rejections": len(rejections) > 0,
+            "download_id": raw.get("downloadId", ""),
         }
 
     # ------------------------------------------------------------------
@@ -445,6 +474,17 @@ class RadarrProvider(ArrBaseProvider):
                     }
                 },
             ),
+            ActionDefinition(
+                key="manual_import",
+                display_name="Manual Import",
+                permission="radarr.import",
+                category="action",
+                params_schema={
+                    "properties": {
+                        "download_id": {"type": "string", "required": True},
+                    }
+                },
+            ),
         ]
 
     async def execute_action(self, action: str, params: dict[str, Any]) -> ActionResult:
@@ -481,6 +521,9 @@ class RadarrProvider(ArrBaseProvider):
                     return ActionResult(success=False, message="No queue ID provided")
                 return await self._grab_queue_item(queue_id)
 
+            elif action == "manual_import":
+                return await self._build_and_execute_manual_import(params)
+
             else:
                 return ActionResult(success=False, message=f"Unknown action: {action}")
 
@@ -513,3 +556,48 @@ class RadarrProvider(ArrBaseProvider):
                 )
         except Exception as e:
             return ActionResult(success=False, message=f"Delete failed: {str(e)}")
+
+    async def _build_and_execute_manual_import(
+        self, params: dict[str, Any]
+    ) -> ActionResult:
+        """Parse form params and build ManualImport command payload."""
+        file_count = int(params.get("file_count", 0))
+        if file_count == 0:
+            return ActionResult(success=False, message="No files provided")
+
+        import_mode = params.get("import_mode", "auto")
+        files: list[dict[str, Any]] = []
+
+        for i in range(file_count):
+            if not params.get(f"file_enabled_{i}"):
+                continue
+
+            path = params.get(f"file_path_{i}", "")
+            movie_id = int(params.get(f"movie_id_{i}", 0))
+            quality_json = params.get(f"file_quality_{i}", "{}")
+            languages_json = params.get(f"file_languages_{i}", "[]")
+            release_group = params.get(f"file_release_group_{i}", "")
+            download_id = params.get(f"file_download_id_{i}", "")
+
+            if not path or not movie_id:
+                continue
+
+            try:
+                quality = json_mod.loads(quality_json) if isinstance(quality_json, str) else quality_json
+                languages = json_mod.loads(languages_json) if isinstance(languages_json, str) else languages_json
+            except (json_mod.JSONDecodeError, TypeError):
+                continue
+
+            files.append({
+                "path": path,
+                "movieId": movie_id,
+                "quality": quality,
+                "languages": languages,
+                "releaseGroup": release_group,
+                "downloadId": download_id,
+            })
+
+        if not files:
+            return ActionResult(success=False, message="No valid files selected")
+
+        return await self._execute_manual_import(files, import_mode)

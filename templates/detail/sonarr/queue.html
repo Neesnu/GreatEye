@@ -29,12 +29,22 @@
             <td>{{ item.timeleft or '—' }}</td>
             <td>{{ item.download_client }}</td>
             <td class="arr-table__actions">
-                {% if 'sonarr.import' in permission_keys or 'system.admin' in permission_keys %}
-                <form hx-post="/providers/{{ instance_id }}/actions/grab_queue_item"
-                      hx-target="#toast-container" hx-swap="innerHTML">
-                    <input type="hidden" name="queue_id" value="{{ item.id }}">
-                    <button type="submit" class="btn btn--sm" title="Override rejection and grab">Grab</button>
-                </form>
+                {% if item.tracked_download_state == 'importBlocked' and item.download_id %}
+                    {% if 'sonarr.import' in permission_keys or 'system.admin' in permission_keys %}
+                    <button type="button" class="btn btn--sm btn--primary"
+                            hx-get="/providers/{{ instance_id }}/manual-import?download_id={{ item.download_id }}"
+                            hx-target="#tab-queue"
+                            hx-swap="innerHTML"
+                            title="Review and import files">Import</button>
+                    {% endif %}
+                {% elif item.error_message %}
+                    {% if 'sonarr.import' in permission_keys or 'system.admin' in permission_keys %}
+                    <form hx-post="/providers/{{ instance_id }}/actions/grab_queue_item"
+                          hx-target="#toast-container" hx-swap="innerHTML">
+                        <input type="hidden" name="queue_id" value="{{ item.id }}">
+                        <button type="submit" class="btn btn--sm" title="Override rejection and grab">Grab</button>
+                    </form>
+                    {% endif %}
                 {% endif %}
                 {% if 'sonarr.search' in permission_keys or 'system.admin' in permission_keys %}
                 <form hx-post="/providers/{{ instance_id }}/actions/remove_from_queue"

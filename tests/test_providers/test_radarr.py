@@ -72,7 +72,7 @@ class TestMeta:
 
     def test_permissions_count(self):
         meta = RadarrProvider.meta()
-        assert len(meta.permissions) == 4
+        assert len(meta.permissions) == 5
 
     def test_config_schema_fields(self):
         meta = RadarrProvider.meta()
@@ -361,6 +361,99 @@ class TestActions:
         provider = _make_provider()
         result = await provider.execute_action("nonexistent", {})
         assert result.success is False
+
+
+# ---------------------------------------------------------------------------
+# Manual Import
+# ---------------------------------------------------------------------------
+
+class TestManualImport:
+    @pytest.mark.asyncio
+    async def test_manual_import_preview(self):
+        preview_data = load_fixture("radarr", "manualimport_preview")
+        responses = _default_responses()
+        responses["/api/v3/manualimport"] = {"status": 200, "json": preview_data}
+        provider = _make_provider(responses)
+        result = await provider._fetch_manual_import_preview("movie123abc456")
+        assert len(result) == 2
+        assert result[0]["movie"]["title"] == "Upcoming Movie"
+
+    @pytest.mark.asyncio
+    async def test_manual_import_preview_empty(self):
+        responses = _default_responses()
+        responses["/api/v3/manualimport"] = {"status": 200, "json": []}
+        provider = _make_provider(responses)
+        result = await provider._fetch_manual_import_preview("nonexistent")
+        assert result == []
+
+    @pytest.mark.asyncio
+    async def test_manual_import_preview_error(self):
+        responses = _default_responses()
+        responses["/api/v3/manualimport"] = {"status": 500, "json": {}}
+        provider = _make_provider(responses)
+        result = await provider._fetch_manual_import_preview("abc")
+        assert result == []
+
+    def test_normalize_manual_import_file(self):
+        preview_data = load_fixture("radarr", "manualimport_preview")
+        provider = _make_provider()
+        normalized = provider._normalize_manual_import_file(preview_data[0])
+        assert normalized["movie_title"] == "Upcoming Movie"
+        assert normalized["movie_id"] == 3
+        assert normalized["movie_year"] == 2025
+        assert normalized["quality_name"] == "Bluray-1080p"
+        assert normalized["language_names"] == ["English"]
+        assert normalized["has_rejections"] is False
+
+    def test_normalize_manual_import_file_with_rejections(self):
+        preview_data = load_fixture("radarr", "manualimport_preview")
+        provider = _make_provider()
+        normalized = provider._normalize_manual_import_file(preview_data[1])
+        assert normalized["has_rejections"] is True
+        assert len(normalized["rejections"]) == 1
+
+    @pytest.mark.asyncio
+    async def test_manual_import_execute(self):
+        responses = _default_responses()
+        provider = _make_provider(responses)
+        files = [{
+            "path": "/downloads/movies/movie.mkv",
+            "movieId": 3,
+            "quality": {"quality": {"id": 7, "name": "Bluray-1080p"}, "revision": {"version": 1}},
+            "languages": [{"id": 1, "name": "English"}],
+            "releaseGroup": "x265",
+            "downloadId": "movie123abc456",
+        }]
+        result = await provider._execute_manual_import(files)
+        assert result.success is True
+        assert "ManualImport" in result.message
+
+    @pytest.mark.asyncio
+    async def test_manual_import_action_no_files(self):
+        provider = _make_provider()
+        result = await provider.execute_action("manual_import", {"file_count": "0"})
+        assert result.success is False
+
+    def test_download_id_in_queue_record(self):
+        """Verify download_id is included in normalized queue records."""
+        provider = _make_provider()
+        record = {
+            "id": 201,
+            "movie": {"id": 3, "title": "Test Movie", "year": 2025},
+            "quality": {"quality": {"id": 7, "name": "Bluray-1080p"}},
+            "customFormats": [],
+            "size": 1000, "sizeleft": 500,
+            "status": "downloading",
+            "trackedDownloadStatus": "ok",
+            "trackedDownloadState": "importing",
+            "statusMessages": [],
+            "downloadClient": "qBit",
+            "indexer": "Prowlarr",
+            "outputPath": "/downloads/",
+            "downloadId": "movie123",
+        }
+        result = provider._normalize_queue_record(record)
+        assert result["download_id"] == "movie123"
 
 
 # ---------------------------------------------------------------------------

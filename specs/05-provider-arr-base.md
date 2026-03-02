@@ -238,7 +238,8 @@ After normalization, all *arr queue records share this structure:
   "timeleft": "00:15:00",
   "download_client": "qBittorrent",
   "indexer": "Prowlarr",
-  "output_path": "/00_media/downloads/tv/"
+  "output_path": "/00_media/downloads/tv/",
+  "download_id": "abc123def456"
 }
 ```
 
@@ -373,6 +374,61 @@ async def _grab_queue_item(self, queue_id: int) -> ActionResult:
         return ActionResult(success=False, message=f"Grab failed: {str(e)}")
 ```
 
+## Shared Manual Import
+
+Two-phase interactive workflow for importing downloaded files that are stuck
+in `importBlocked` state (e.g., "Unable to determine if file is a sample").
+
+### Preview Endpoint
+```
+GET {api_base}/manualimport?downloadId={downloadId}&filterExistingFiles=true
+```
+
+Returns array of files with auto-detected matches (series/movie, episodes,
+quality, languages) and any rejections. The `downloadId` comes from the
+queue record's `download_id` field.
+
+### Execute Endpoint
+Uses the shared `_execute_command()` with ManualImport command name:
+```json
+{
+  "name": "ManualImport",
+  "importMode": "auto",
+  "files": [
+    {
+      "path": "/path/to/file.mkv",
+      "seriesId": 2,
+      "episodeIds": [501],
+      "quality": {"quality": {"id": 3, "name": "HDTV-1080p"}, "revision": {"version": 1}},
+      "languages": [{"id": 1, "name": "English"}],
+      "releaseGroup": "x264",
+      "downloadId": "abc123def456"
+    }
+  ]
+}
+```
+
+For Radarr, files use `movieId` instead of `seriesId`/`episodeIds`.
+
+### Implementation
+```python
+async def _fetch_manual_import_preview(self, download_id: str) -> list[dict]:
+    """Fetch file preview for manual import."""
+
+async def _execute_manual_import(self, files: list[dict], import_mode: str = "auto") -> ActionResult:
+    """Execute manual import with user-confirmed file list."""
+```
+
+Each child provider implements `_normalize_manual_import_file()` to transform
+raw preview data into template-friendly dicts.
+
+### Routes
+```
+GET  /providers/{id}/manual-import?download_id={downloadId}  — preview UI
+POST /providers/{id}/manual-import                           — execute import
+GET  /providers/{id}/manual-import/episodes?series_id={id}   — Sonarr episode lookup
+```
+
 ## Shared Validate Config
 
 ### Implementation
@@ -450,6 +506,7 @@ Each *arr provider that extends ArrBaseProvider must implement:
 | `_expected_app_name()`     | "Sonarr", "Radarr", or "Prowlarr"                |
 | `_queue_include_params()`  | Provider-specific query params for queue endpoint |
 | `_normalize_queue_record()`| Transform queue record to standard shape          |
+| `_normalize_manual_import_file()` | Transform manual import preview file       |
 | `get_summary()`            | Provider-specific summary data                    |
 | `get_detail()`             | Provider-specific detail data                     |
 | `get_actions()`            | Provider-specific action definitions              |
@@ -462,4 +519,6 @@ Methods inherited from ArrBaseProvider (no override needed):
 - `_execute_command()` — shared fire-and-forget
 - `_remove_from_queue()` — shared queue removal
 - `_grab_queue_item()` — shared queue grab (override rejection)
+- `_fetch_manual_import_preview()` — shared manual import file preview
+- `_execute_manual_import()` — shared manual import execution
 - `_fetch_disk_space()` — shared disk space fetching

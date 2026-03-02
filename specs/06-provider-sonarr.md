@@ -354,25 +354,36 @@ Trigger a search for all missing episodes across the library.
 ```
 
 ### manual_import
-Trigger a manual import scan of a specified path.
+Interactive two-phase workflow for importing downloaded files that are stuck
+in `importBlocked` state (e.g., "Unable to determine if file is a sample").
 
 | Field        | Value                                        |
 |--------------|----------------------------------------------|
 | Key          | manual_import                                |
 | Permission   | sonarr.import                                |
 | Confirm      | false                                        |
-| Params       | `{"path": "/downloads/tv/", "import_mode": "move"}` |
+| Params       | `{"file_count": 2, "file_path_0": "...", "series_id_0": 2, ...}` |
 
-**Implementation note:** Manual import in Sonarr v4 is a two-step process:
-1. `GET /api/v3/manualimport?folder={path}&filterExistingFiles=true`
-   Returns a list of detected files with matched series/episodes
-2. User reviews and confirms matches in the UI
-3. `POST /api/v3/command` with ManualImport payload
+**UI Flow:**
+1. Queue table shows "Import" button for items with `tracked_download_state == "importBlocked"`
+2. Clicking Import calls `GET /providers/{id}/manual-import?download_id={downloadId}`
+3. This fetches `GET /api/v3/manualimport?downloadId={downloadId}&filterExistingFiles=true`
+4. Renders a per-file review table with series/episode/quality/language dropdowns
+5. User reviews matches, toggles files on/off, optionally changes series/episode
+6. Submitting calls `POST /providers/{id}/manual-import` with form data
+7. Provider parses flat form fields into the ManualImport command payload
+8. Executes `POST /api/v3/command` with ManualImport command
 
-This action is more complex than a simple API call — it requires an
-interactive UI flow. The Great Eye detail view should render the manual
-import results as a reviewable list where the user can confirm/adjust
-matches before triggering the actual import.
+**Routes (spec 05):**
+```
+GET  /providers/{id}/manual-import?download_id={downloadId}  — preview UI
+POST /providers/{id}/manual-import                           — execute import
+GET  /providers/{id}/manual-import/episodes?series_id={id}   — episode dropdown
+```
+
+**Episode Dependent Select:** When the user changes the series dropdown,
+HTMX fetches episodes for the new series via the episodes endpoint and
+replaces the episode `<select>` options.
 
 ### refresh_series
 Refresh a series — rescan disk and update metadata.
