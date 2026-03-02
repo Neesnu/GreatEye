@@ -287,11 +287,13 @@ async def update_provider(
     if detail_cache_ttl:
         instance.detail_cache_ttl = int(detail_cache_ttl)
 
+    # Commit config changes before restarting
+    await db.commit()
+
     # Restart the instance with new config
     await registry.remove_instance(instance_id)
-    await db.flush()
 
-    # Re-read from DB and restart
+    # Re-read from DB (committed) and restart
     result = await db.execute(
         select(ProviderInstance).where(ProviderInstance.id == instance_id)
     )
