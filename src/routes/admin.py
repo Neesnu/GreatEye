@@ -89,7 +89,7 @@ async def new_provider_form(
     db: AsyncSession = Depends(get_db),
 ) -> HTMLResponse:
     """Show form for creating a new provider instance."""
-    type_id = request.query_params.get("type", "")
+    type_id = request.query_params.get("type_id", "")
 
     type_result = await db.execute(select(ProviderType).order_by(ProviderType.display_name))
     provider_types = type_result.scalars().all()
