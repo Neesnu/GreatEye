@@ -10,6 +10,7 @@ import json as json_module
 import structlog
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import HTMLResponse
+from markupsafe import escape
 from fastapi.templating import Jinja2Templates
 
 from src.auth.dependencies import get_current_user, require_permission
@@ -124,12 +125,12 @@ async def provider_action(
 
     if result.success:
         return HTMLResponse(
-            f'<div class="toast toast--success">{result.message}</div>',
+            f'<div class="toast toast--success">{escape(result.message)}</div>',
             headers={"HX-Trigger": "actionComplete"},
         )
     else:
         return HTMLResponse(
-            f'<div class="toast toast--error">{result.message}</div>',
+            f'<div class="toast toast--error">{escape(result.message)}</div>',
             status_code=400,
         )
 
@@ -211,7 +212,7 @@ async def manual_import_execute(
 
     if result.success:
         return HTMLResponse(
-            f'<div class="toast toast--success">{result.message}</div>',
+            f'<div class="toast toast--success">{escape(result.message)}</div>',
             headers={
                 "HX-Trigger": "actionComplete",
                 "HX-Redirect": f"/providers/{instance_id}?tab=queue",
@@ -219,7 +220,7 @@ async def manual_import_execute(
         )
     else:
         return HTMLResponse(
-            f'<div class="toast toast--error">{result.message}</div>',
+            f'<div class="toast toast--error">{escape(result.message)}</div>',
             status_code=400,
         )
 

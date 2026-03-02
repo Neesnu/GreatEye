@@ -1,17 +1,34 @@
 import ipaddress
+import socket
 from typing import Any
 from urllib.parse import urlparse
 
 BLOCKED_HOSTS = {
     "169.254.169.254",
     "metadata.google.internal",
+    "metadata.packet.net",
     "100.100.100.200",
+    "localhost",
+    "localhost.localdomain",
 }
 
 BLOCKED_NETWORKS = [
-    ipaddress.ip_network("169.254.0.0/16"),
+    # IPv4
     ipaddress.ip_network("127.0.0.0/8"),
+    ipaddress.ip_network("169.254.0.0/16"),
+    # IPv6
+    ipaddress.ip_network("::1/128"),
+    ipaddress.ip_network("fe80::/10"),
+    ipaddress.ip_network("::ffff:127.0.0.0/104"),
 ]
+
+
+def _is_blocked_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
+    """Check if an IP address falls within any blocked network."""
+    for network in BLOCKED_NETWORKS:
+        if ip in network:
+            return True
+    return False
 
 
 def validate_provider_url(url: str) -> tuple[bool, str]:
@@ -24,18 +41,29 @@ def validate_provider_url(url: str) -> tuple[bool, str]:
     if not parsed.hostname:
         return False, "URL must include a hostname"
 
-    hostname = parsed.hostname
+    hostname = parsed.hostname.lower()
 
     if hostname in BLOCKED_HOSTS:
         return False, f"Blocked host: {hostname}"
 
+    # Check if hostname is a literal IP address
     try:
         ip = ipaddress.ip_address(hostname)
-        for network in BLOCKED_NETWORKS:
-            if ip in network:
-                return False, f"Blocked network: {hostname}"
+        if _is_blocked_ip(ip):
+            return False, f"Blocked network: {hostname}"
+        return True, "OK"
     except ValueError:
         pass
+
+    # Hostname is a DNS name — resolve and check the resulting IPs
+    try:
+        results = socket.getaddrinfo(hostname, None, type=socket.SOCK_STREAM)
+        for family, _type, _proto, _canonname, sockaddr in results:
+            ip = ipaddress.ip_address(sockaddr[0])
+            if _is_blocked_ip(ip):
+                return False, f"Hostname {hostname} resolves to blocked address"
+    except socket.gaierror:
+        pass  # DNS resolution failed — allow (provider health check will fail)
 
     return True, "OK"
 

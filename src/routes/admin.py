@@ -531,6 +531,13 @@ async def create_user(
         result = await db.execute(select(Role).where(Role.name == "user"))
         default_role = result.scalar_one()
         role_id = default_role.id
+    else:
+        result = await db.execute(select(Role).where(Role.id == int(role_id)))
+        if result.scalar_one_or_none() is None:
+            return HTMLResponse(
+                '<div class="toast toast--error">Invalid role</div>',
+                status_code=400,
+            )
 
     new_user = User(
         username=username,
@@ -591,6 +598,12 @@ async def update_user(
     # Update role
     role_id = form.get("role_id", "")
     if role_id:
+        result = await db.execute(select(Role).where(Role.id == int(role_id)))
+        if result.scalar_one_or_none() is None:
+            return HTMLResponse(
+                '<div class="toast toast--error">Invalid role</div>',
+                status_code=400,
+            )
         edit_user.role_id = int(role_id)
 
     # Update active status

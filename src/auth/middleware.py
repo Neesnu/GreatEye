@@ -9,15 +9,23 @@ from src.database import async_session_factory
 from src.models.session import Session
 from src.models.user import User
 
-# Routes that never require authentication
+# Routes that never require authentication — prefix-matched (must end with /)
 EXEMPT_PREFIXES = (
     "/static/",
+    "/auth/login/",
+    "/auth/plex/",
+    "/auth/reset/",
+    "/setup/",
+)
+
+# Exact-match exempt routes
+EXEMPT_PATHS = {
     "/auth/login",
     "/auth/plex",
     "/auth/reset",
     "/setup",
     "/health",
-)
+}
 
 
 class AuthMiddleware(BaseHTTPMiddleware):
@@ -32,7 +40,7 @@ class AuthMiddleware(BaseHTTPMiddleware):
         path = request.url.path
 
         # Exempt routes bypass all auth checks
-        if any(path.startswith(prefix) for prefix in EXEMPT_PREFIXES):
+        if path in EXEMPT_PATHS or any(path.startswith(p) for p in EXEMPT_PREFIXES):
             return await call_next(request)
 
         async with async_session_factory() as db:

@@ -88,6 +88,8 @@ async def login(request: Request, db: AsyncSession = Depends(get_db)) -> HTMLRes
     user = result.scalar_one_or_none()
 
     if user is None or user.auth_method == "plex":
+        # Perform a dummy hash to prevent timing-based username enumeration
+        verify_password(password, "$2b$12$000000000000000000000uVsEnAdx6XGFXgQqIOwSAl8tONAgfb6")
         login_limiter.record(client_ip)
         logger.warning("login_failed", username=username, ip=client_ip, reason="user_not_found")
         return HTMLResponse(fail_msg, status_code=401)

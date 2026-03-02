@@ -226,6 +226,7 @@ class ProviderRegistry:
             base_url=base_url,
             timeout=httpx.Timeout(connect=5.0, read=10.0, write=5.0, pool=5.0),
             headers={"User-Agent": "GreatEye/1.0"},
+            follow_redirects=False,
         )
 
         self._instances[db_instance.id] = provider
