@@ -152,14 +152,14 @@ class TestSummary:
         queue = result.data["queue"]
         assert queue["total"] == 1
         assert queue["downloading"] == 1
-        assert len(queue["items"]) == 1
+        assert len(queue["records"]) == 1
 
     @pytest.mark.asyncio
     async def test_queue_item_normalization(self):
         provider = _make_provider()
         result = await provider.get_summary()
 
-        item = result.data["queue"]["items"][0]
+        item = result.data["queue"]["records"][0]
         assert item["media_title"] == "Upcoming Movie"
         assert item["detail_title"] == "(2025)"
         assert item["quality"] == "Bluray-1080p"

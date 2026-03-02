@@ -179,14 +179,14 @@ class TestSummary:
         queue = result.data["queue"]
         assert queue["total"] == 2
         assert queue["downloading"] == 2
-        assert len(queue["items"]) == 2
+        assert len(queue["records"]) == 2
 
     @pytest.mark.asyncio
     async def test_queue_item_normalization(self):
         provider = _make_provider()
         result = await provider.get_summary()
 
-        item = result.data["queue"]["items"][0]
+        item = result.data["queue"]["records"][0]
         assert item["media_title"] == "The Last of Us"
         assert item["detail_title"] == "S02E04 - Kin"
         assert item["quality"] == "HDTV-1080p"
@@ -197,7 +197,7 @@ class TestSummary:
         provider = _make_provider()
         result = await provider.get_summary()
 
-        errored = result.data["queue"]["items"][1]
+        errored = result.data["queue"]["records"][1]
         assert errored["error_message"] == "Not enough seeders"
         assert errored["tracked_download_status"] == "warning"
 

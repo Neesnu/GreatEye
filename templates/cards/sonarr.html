@@ -28,9 +28,9 @@
         <span class="arr-queue-summary__errors">{{ s.queue.errors }} error{{ 's' if s.queue.errors != 1 }}</span>
         {% endif %}
     </div>
-    {% if s.queue.items %}
+    {% if s.queue.records %}
     <div class="arr-queue-items">
-        {% for item in s.queue.items[:3] %}
+        {% for item in s.queue.records[:3] %}
         <div class="arr-queue-item">
             <div class="arr-queue-item__title" title="{{ item.media_title }}">
                 {{ item.media_title | truncate(30) }}
