@@ -706,6 +706,11 @@ class QBittorrentProvider(BaseProvider):
     # ------------------------------------------------------------------
 
     async def cleanup(self) -> None:
+        if self._sid and self.http_client:
+            try:
+                await self._request("POST", "/api/v2/auth/logout")
+            except Exception:
+                pass
         self._sid = None
         self._qbit_version = None
 
