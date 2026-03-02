@@ -239,6 +239,26 @@ class ArrBaseProvider(BaseProvider):
             return ActionResult(success=False, message=f"Remove failed: {str(e)}")
 
     # ------------------------------------------------------------------
+    # Grab Queue Item (shared)
+    # ------------------------------------------------------------------
+
+    async def _grab_queue_item(self, queue_id: int) -> ActionResult:
+        """Grab/re-grab a queue item, overriding rejection rules."""
+        try:
+            response = await self.http_client.post(
+                f"{self.api_base}/queue/grab/{queue_id}"
+            )
+            if response.status_code in (200, 201):
+                return ActionResult(success=True, message="Release grabbed", invalidate_cache=True)
+            else:
+                return ActionResult(
+                    success=False,
+                    message=f"Grab failed: HTTP {response.status_code}",
+                )
+        except Exception as e:
+            return ActionResult(success=False, message=f"Grab failed: {str(e)}")
+
+    # ------------------------------------------------------------------
     # Disk Space (shared)
     # ------------------------------------------------------------------
 

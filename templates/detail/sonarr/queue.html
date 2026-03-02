@@ -28,7 +28,14 @@
             <td>{{ item.size_formatted }}</td>
             <td>{{ item.timeleft or '—' }}</td>
             <td>{{ item.download_client }}</td>
-            <td>
+            <td class="arr-table__actions">
+                {% if 'sonarr.import' in permission_keys or 'system.admin' in permission_keys %}
+                <form hx-post="/providers/{{ instance_id }}/actions/grab_queue_item"
+                      hx-target="#toast-container" hx-swap="innerHTML">
+                    <input type="hidden" name="queue_id" value="{{ item.id }}">
+                    <button type="submit" class="btn btn--sm" title="Override rejection and grab">Grab</button>
+                </form>
+                {% endif %}
                 {% if 'sonarr.search' in permission_keys or 'system.admin' in permission_keys %}
                 <form hx-post="/providers/{{ instance_id }}/actions/remove_from_queue"
                       hx-target="#toast-container" hx-swap="innerHTML">

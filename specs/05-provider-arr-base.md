@@ -339,6 +339,40 @@ async def _remove_from_queue(self, queue_id: int,
         return ActionResult(success=False, message=f"Remove failed: {str(e)}")
 ```
 
+## Shared Grab Queue Item
+
+### Endpoint
+```
+POST {api_base}/queue/grab/{id}
+```
+
+Forces a re-grab of a queue item, overriding any quality/format rejections.
+Used when a user wants to manually approve a release that was automatically
+rejected by Sonarr/Radarr's quality or custom format rules.
+
+### Implementation
+```python
+async def _grab_queue_item(self, queue_id: int) -> ActionResult:
+    """Grab/re-grab a queue item, overriding rejection rules."""
+    try:
+        response = await self.http_client.post(
+            f"{self.api_base}/queue/grab/{queue_id}"
+        )
+        if response.status_code in (200, 201):
+            return ActionResult(
+                success=True,
+                message="Release grabbed",
+                invalidate_cache=True
+            )
+        else:
+            return ActionResult(
+                success=False,
+                message=f"Grab failed: HTTP {response.status_code}"
+            )
+    except Exception as e:
+        return ActionResult(success=False, message=f"Grab failed: {str(e)}")
+```
+
 ## Shared Validate Config
 
 ### Implementation
@@ -427,4 +461,5 @@ Methods inherited from ArrBaseProvider (no override needed):
 - `_fetch_queue()` — shared with normalization hook
 - `_execute_command()` — shared fire-and-forget
 - `_remove_from_queue()` — shared queue removal
+- `_grab_queue_item()` — shared queue grab (override rejection)
 - `_fetch_disk_space()` — shared disk space fetching

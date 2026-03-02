@@ -534,6 +534,17 @@ class SonarrProvider(ArrBaseProvider):
                     }
                 },
             ),
+            ActionDefinition(
+                key="grab_queue_item",
+                display_name="Grab Release",
+                permission="sonarr.import",
+                category="action",
+                params_schema={
+                    "properties": {
+                        "queue_id": {"type": "integer", "required": True},
+                    }
+                },
+            ),
         ]
 
     async def execute_action(self, action: str, params: dict[str, Any]) -> ActionResult:
@@ -578,6 +589,12 @@ class SonarrProvider(ArrBaseProvider):
                     return ActionResult(success=False, message="No queue ID provided")
                 blocklist = str(params.get("blocklist", "false")).lower() == "true"
                 return await self._remove_from_queue(queue_id, blocklist=blocklist)
+
+            elif action == "grab_queue_item":
+                queue_id = int(params.get("queue_id", 0))
+                if not queue_id:
+                    return ActionResult(success=False, message="No queue ID provided")
+                return await self._grab_queue_item(queue_id)
 
             else:
                 return ActionResult(success=False, message=f"Unknown action: {action}")

@@ -74,7 +74,7 @@ GET /api/v3/health                              # Internal health warnings
     "paused": 0,
     "errors": 1,
     "warnings": 1,
-    "items": [
+    "records": [
       {
         "series_title": "Show Name",
         "episode_title": "Episode Title",
@@ -419,6 +419,20 @@ Remove an item from the download queue.
 
 If `blocklist` is true, the release is added to Sonarr's blocklist
 to prevent re-downloading.
+
+### grab_queue_item
+Force-grab a queue item, overriding quality/format rejection rules.
+
+| Field        | Value                                        |
+|--------------|----------------------------------------------|
+| Key          | grab_queue_item                              |
+| Permission   | sonarr.import                                |
+| Confirm      | false                                        |
+| Params       | `{"queue_id": 101}`                          |
+
+**Endpoint:** `POST /api/v3/queue/grab/{id}`
+
+Uses shared `ArrBaseProvider._grab_queue_item()` (spec 05).
 
 ## Metrics to Track
 | Metric                          | Value Source                     | Tags              |

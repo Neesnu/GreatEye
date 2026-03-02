@@ -409,6 +409,23 @@ class TestActions:
         assert "removed" in result.message.lower()
 
     @pytest.mark.asyncio
+    async def test_grab_queue_item(self):
+        responses = _default_responses()
+        responses["/api/v3/queue/grab/101"] = {"status": 200, "json": {}}
+        provider = _make_provider(responses)
+        result = await provider.execute_action(
+            "grab_queue_item", {"queue_id": "101"}
+        )
+        assert result.success is True
+        assert "grabbed" in result.message.lower()
+
+    @pytest.mark.asyncio
+    async def test_grab_queue_item_no_id(self):
+        provider = _make_provider()
+        result = await provider.execute_action("grab_queue_item", {})
+        assert result.success is False
+
+    @pytest.mark.asyncio
     async def test_unknown_action(self):
         provider = _make_provider()
         result = await provider.execute_action("nonexistent", {})
