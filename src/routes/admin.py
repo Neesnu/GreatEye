@@ -29,10 +29,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 templates = Jinja2Templates(directory=BASE_DIR / "templates")
 
 
-def _render(request: Request, template: str, context: dict) -> HTMLResponse:
+async def _render(request: Request, template: str, context: dict) -> HTMLResponse:
     """Render full page or partial depending on HX-Request."""
     if request.headers.get("HX-Request"):
         return HTMLResponse(templates.get_template(template).render(context))
+    context["sidebar_instances"] = await registry.get_sidebar_instances()
     return templates.TemplateResponse(
         "base.html", {**context, "content_template": template}
     )
@@ -73,7 +74,7 @@ async def list_providers(
     type_result = await db.execute(select(ProviderType).order_by(ProviderType.display_name))
     provider_types = type_result.scalars().all()
 
-    return _render(request, "admin/providers.html", {
+    return await _render(request, "admin/providers.html", {
         "request": request,
         "user": user,
         "instances": instance_data,
@@ -103,7 +104,7 @@ async def new_provider_form(
                 config_schema = json.loads(pt.config_schema)
                 break
 
-    return _render(request, "admin/provider_form.html", {
+    return await _render(request, "admin/provider_form.html", {
         "request": request,
         "user": user,
         "provider_types": provider_types,
@@ -212,7 +213,7 @@ async def edit_provider_form(
             except Exception:
                 config_values[key] = ""
 
-    return _render(request, "admin/provider_form.html", {
+    return await _render(request, "admin/provider_form.html", {
         "request": request,
         "user": user,
         "provider_types": [],
@@ -466,7 +467,7 @@ async def list_users(
     role_result = await db.execute(select(Role).order_by(Role.name))
     roles = role_result.scalars().all()
 
-    return _render(request, "admin/users.html", {
+    return await _render(request, "admin/users.html", {
         "request": request,
         "user": user,
         "users": users,
@@ -484,7 +485,7 @@ async def new_user_form(
     role_result = await db.execute(select(Role).order_by(Role.name))
     roles = role_result.scalars().all()
 
-    return _render(request, "admin/user_form.html", {
+    return await _render(request, "admin/user_form.html", {
         "request": request,
         "user": user,
         "roles": roles,
@@ -562,7 +563,7 @@ async def edit_user_form(
     role_result = await db.execute(select(Role).order_by(Role.name))
     roles = role_result.scalars().all()
 
-    return _render(request, "admin/user_form.html", {
+    return await _render(request, "admin/user_form.html", {
         "request": request,
         "user": user,
         "roles": roles,
@@ -692,7 +693,7 @@ async def list_roles(
     for perm in all_permissions:
         perm_groups.setdefault(perm.provider_type, []).append(perm)
 
-    return _render(request, "admin/roles.html", {
+    return await _render(request, "admin/roles.html", {
         "request": request,
         "user": user,
         "roles": roles,
@@ -724,7 +725,7 @@ async def edit_role_form(
 
     role_perm_keys = {p.key for p in role.permissions}
 
-    return _render(request, "admin/role_form.html", {
+    return await _render(request, "admin/role_form.html", {
         "request": request,
         "user": user,
         "role": role,
@@ -891,7 +892,7 @@ async def settings_page(
 
     provider_type_count = len(registry.get_registered_types())
 
-    return _render(request, "admin/settings.html", {
+    return await _render(request, "admin/settings.html", {
         "request": request,
         "user": user,
         "stats": {
@@ -917,7 +918,7 @@ async def list_plex_users(
     """List all approved Plex usernames."""
     result = await db.execute(select(PlexApprovedUser))
     approved = result.scalars().all()
-    return _render(request, "admin/plex_users.html", {
+    return await _render(request, "admin/plex_users.html", {
         "request": request,
         "user": user,
         "approved_users": approved,
@@ -1023,7 +1024,7 @@ async def list_resets(
         )
     )
     resets = result.scalars().all()
-    return _render(request, "admin/resets.html", {
+    return await _render(request, "admin/resets.html", {
         "request": request,
         "user": user,
         "resets": resets,

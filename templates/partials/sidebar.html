@@ -6,10 +6,10 @@
         Dashboard
     </a>
 
-    {% if instances is defined and instances %}
+    {% if sidebar_instances is defined and sidebar_instances %}
     <div class="sidebar__section-title">Providers</div>
-    {% for inst in instances %}
-    <a href="/providers/{{ inst.instance_id }}/detail"
+    {% for inst in sidebar_instances %}
+    <a href="/providers/{{ inst.instance_id }}"
        class="sidebar__link">
         <span class="health-dot health-dot--{{ inst.health_status }}"
               title="{{ inst.health_message }}"

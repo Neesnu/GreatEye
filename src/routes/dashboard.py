@@ -57,6 +57,7 @@ async def dashboard(
             templates.get_template("partials/dashboard_content.html").render(context)
         )
 
+    context["sidebar_instances"] = await registry.get_sidebar_instances()
     return templates.TemplateResponse("pages/dashboard.html", context)
 
 

@@ -341,6 +341,27 @@ class ProviderRegistry:
         """Get all active provider instances."""
         return list(self._instances.values())
 
+    async def get_sidebar_instances(self) -> list[dict[str, Any]]:
+        """Get lightweight instance data for sidebar rendering."""
+        items: list[dict[str, Any]] = []
+        async with async_session_factory() as session:
+            for provider in self._instances.values():
+                meta = provider.meta()
+                result = await session.execute(
+                    select(ProviderInstanceState).where(
+                        ProviderInstanceState.instance_id == provider.instance_id
+                    )
+                )
+                state = result.scalar_one_or_none()
+                items.append({
+                    "instance_id": provider.instance_id,
+                    "display_name": provider.display_name,
+                    "type_id": meta.type_id,
+                    "health_status": state.health_status if state else "unknown",
+                    "health_message": state.health_message if state else "",
+                })
+        return items
+
     def get_provider_class(self, type_id: str) -> type[BaseProvider] | None:
         """Get a provider class by type ID."""
         return self._provider_classes.get(type_id)

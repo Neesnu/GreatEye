@@ -72,6 +72,7 @@ async def provider_detail(
             templates.get_template(detail_template).render(context)
         )
 
+    context["sidebar_instances"] = await registry.get_sidebar_instances()
     return templates.TemplateResponse(
         "pages/provider_detail.html",
         {**context, "detail_template": detail_template},
