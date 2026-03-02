@@ -70,7 +70,7 @@ class PiholeProvider(BaseProvider):
     # ------------------------------------------------------------------
 
     async def _authenticate(self) -> bool:
-        """Authenticate to Pi-hole and store session cookie."""
+        """Authenticate to Pi-hole and store session ID for header auth."""
         password = self.config.get("password", "")
         if not password:
             return True  # No password configured, try unauthenticated
@@ -82,7 +82,7 @@ class PiholeProvider(BaseProvider):
                 session = data.get("session", {})
                 if session.get("valid"):
                     self._sid = session.get("sid", "")
-                    self.http_client.cookies.set("sid", self._sid)
+                    self.http_client.headers["X-FTL-SID"] = self._sid
                     return True
             return False
         except Exception:
@@ -95,6 +95,7 @@ class PiholeProvider(BaseProvider):
                 await self.http_client.delete("/api/auth")
             except Exception:
                 pass
+            self.http_client.headers.pop("X-FTL-SID", None)
             self._sid = None
 
     async def _api_get(self, path: str, **params: Any) -> httpx.Response:
