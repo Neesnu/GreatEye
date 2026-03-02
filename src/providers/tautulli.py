@@ -85,7 +85,7 @@ class TautulliProvider(BaseProvider):
     async def health_check(self) -> HealthResult:
         try:
             start = datetime.utcnow()
-            data = await self._api_call("server_info")
+            data = await self._api_call("get_server_info")
             elapsed = (datetime.utcnow() - start).total_seconds() * 1000
 
             if not data:
@@ -330,7 +330,7 @@ class TautulliProvider(BaseProvider):
 
     async def validate_config(self) -> tuple[bool, str]:
         try:
-            data = await self._api_call("server_info")
+            data = await self._api_call("get_server_info")
             if not data:
                 return False, "Cannot authenticate — check API key"
 

@@ -67,7 +67,7 @@ def _default_responses() -> dict:
     get_history = load_fixture("tautulli", "get_history")
     refresh_libraries = load_fixture("tautulli", "refresh_libraries")
     return {
-        "server_info": {"status": 200, "json": server_info},
+        "get_server_info": {"status": 200, "json": server_info},
         "get_activity": {"status": 200, "json": get_activity},
         "get_recently_added": {"status": 200, "json": get_recently_added},
         "get_libraries": {"status": 200, "json": get_libraries},
@@ -117,7 +117,7 @@ class TestHealthCheck:
     async def test_empty_response(self):
         """Test when server_info returns empty data (e.g. bad API key)."""
         responses = _default_responses()
-        responses["server_info"] = {
+        responses["get_server_info"] = {
             "status": 200,
             "json": {"response": {"result": "error", "message": "Invalid API key", "data": {}}},
         }
@@ -329,7 +329,7 @@ class TestValidateConfig:
     @pytest.mark.asyncio
     async def test_bad_api_key(self):
         responses = _default_responses()
-        responses["server_info"] = {
+        responses["get_server_info"] = {
             "status": 200,
             "json": {"response": {"result": "error", "message": "Invalid API key", "data": {}}},
         }
