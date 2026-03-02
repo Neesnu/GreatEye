@@ -573,11 +573,15 @@ class RadarrProvider(ArrBaseProvider):
                 continue
 
             path = params.get(f"file_path_{i}", "")
-            movie_id = int(params.get(f"movie_id_{i}", 0))
             quality_json = params.get(f"file_quality_{i}", "{}")
             languages_json = params.get(f"file_languages_{i}", "[]")
             release_group = params.get(f"file_release_group_{i}", "")
             download_id = params.get(f"file_download_id_{i}", "")
+
+            try:
+                movie_id = int(params.get(f"movie_id_{i}", 0) or 0)
+            except (ValueError, TypeError):
+                continue
 
             if not path or not movie_id:
                 continue

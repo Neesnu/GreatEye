@@ -700,20 +700,27 @@ class SonarrProvider(ArrBaseProvider):
                 continue
 
             path = params.get(f"file_path_{i}", "")
-            series_id = int(params.get(f"series_id_{i}", 0))
             episode_ids_raw = params.get(f"episode_ids_{i}", "")
             quality_json = params.get(f"file_quality_{i}", "{}")
             languages_json = params.get(f"file_languages_{i}", "[]")
             release_group = params.get(f"file_release_group_{i}", "")
             download_id = params.get(f"file_download_id_{i}", "")
 
+            try:
+                series_id = int(params.get(f"series_id_{i}", 0) or 0)
+            except (ValueError, TypeError):
+                continue
+
             if not path or not series_id:
                 continue
 
-            if isinstance(episode_ids_raw, str):
-                episode_ids = [int(x) for x in episode_ids_raw.split(",") if x.strip()]
-            else:
-                episode_ids = [int(episode_ids_raw)]
+            try:
+                if isinstance(episode_ids_raw, str):
+                    episode_ids = [int(x) for x in episode_ids_raw.split(",") if x.strip()]
+                else:
+                    episode_ids = [int(episode_ids_raw)]
+            except (ValueError, TypeError):
+                continue
 
             try:
                 quality = json_mod.loads(quality_json) if isinstance(quality_json, str) else quality_json

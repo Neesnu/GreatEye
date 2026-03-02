@@ -5,6 +5,8 @@ Works for all provider types — templates are resolved by type_id.
 
 from pathlib import Path
 
+import json as json_module
+
 import structlog
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import HTMLResponse
@@ -26,6 +28,19 @@ templates = Jinja2Templates(directory=BASE_DIR / "templates")
 templates.env.filters["format_bytes"] = format_bytes
 templates.env.filters["format_speed"] = format_speed
 templates.env.filters["format_eta"] = format_eta
+
+
+def _json_attr_filter(value: object) -> str:
+    """JSON-encode for use in HTML attributes.
+
+    Returns a plain str (not Markup) so Jinja2 auto-escaping will convert
+    double quotes to &quot;, keeping the attribute value safe.  The browser
+    decodes &quot; back to " when the form is submitted.
+    """
+    return json_module.dumps(value, separators=(",", ":"))
+
+
+templates.env.filters["json_attr"] = _json_attr_filter
 
 
 @router.get("/{instance_id}", response_class=HTMLResponse)
@@ -197,7 +212,10 @@ async def manual_import_execute(
     if result.success:
         return HTMLResponse(
             f'<div class="toast toast--success">{result.message}</div>',
-            headers={"HX-Trigger": "actionComplete"},
+            headers={
+                "HX-Trigger": "actionComplete",
+                "HX-Redirect": f"/providers/{instance_id}?tab=queue",
+            },
         )
     else:
         return HTMLResponse(

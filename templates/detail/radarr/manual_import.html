@@ -93,9 +93,9 @@
                     <td colspan="6">
                         <input type="hidden" name="file_path_{{ loop.index0 }}" value="{{ file.path }}">
                         <input type="hidden" name="file_quality_{{ loop.index0 }}"
-                               value="{{ file.quality | tojson | e }}">
+                               value="{{ file.quality | json_attr }}">
                         <input type="hidden" name="file_languages_{{ loop.index0 }}"
-                               value="{{ file.languages | tojson | e }}">
+                               value="{{ file.languages | json_attr }}">
                         <input type="hidden" name="file_release_group_{{ loop.index0 }}"
                                value="{{ file.release_group }}">
                         <input type="hidden" name="file_download_id_{{ loop.index0 }}"
