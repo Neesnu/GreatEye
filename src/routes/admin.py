@@ -402,8 +402,8 @@ async def toggle_provider(
     instance.is_enabled = not instance.is_enabled
 
     if instance.is_enabled:
-        # Start the instance
-        await db.flush()
+        # Commit before starting so _start_instance sees the new state
+        await db.commit()
         result = await db.execute(
             select(ProviderInstance).where(ProviderInstance.id == instance_id)
         )

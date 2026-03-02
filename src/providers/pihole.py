@@ -88,6 +88,15 @@ class PiholeProvider(BaseProvider):
         except Exception:
             return False
 
+    async def cleanup(self) -> None:
+        """Log out of Pi-hole to release the API session slot."""
+        if self._sid and self.http_client:
+            try:
+                await self.http_client.delete("/api/auth")
+            except Exception:
+                pass
+            self._sid = None
+
     async def _api_get(self, path: str, **params: Any) -> httpx.Response:
         """Make an authenticated GET request, re-authenticating on 401."""
         resp = await self.http_client.get(path, params=params)
