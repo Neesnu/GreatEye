@@ -481,7 +481,7 @@ class RadarrProvider(ArrBaseProvider):
                 category="action",
                 params_schema={
                     "properties": {
-                        "download_id": {"type": "string", "required": True},
+                        "file_count": {"type": "string", "required": True},
                     }
                 },
             ),
