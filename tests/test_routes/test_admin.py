@@ -152,7 +152,7 @@ class TestProviderNew:
     @pytest.mark.asyncio
     async def test_new_form_with_type(self, client: AsyncClient):
         resp = await client.get(
-            "/admin/providers/new?type=mock",
+            "/admin/providers/new?type_id=mock",
             headers={"HX-Request": "true"},
         )
         assert resp.status_code == 200

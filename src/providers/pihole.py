@@ -130,7 +130,20 @@ class PiholeProvider(BaseProvider):
                     response_time_ms=elapsed,
                 )
 
-            data = resp.json()
+            try:
+                data = resp.json()
+            except Exception:
+                return HealthResult(
+                    status=HealthStatus.DOWN,
+                    message="Not a Pi-hole instance (unexpected response)",
+                    response_time_ms=elapsed,
+                )
+            if "blocking" not in data:
+                return HealthResult(
+                    status=HealthStatus.DOWN,
+                    message="Not a Pi-hole instance (missing blocking field)",
+                    response_time_ms=elapsed,
+                )
             blocking = data.get("blocking", True)
 
             if elapsed > 3000:

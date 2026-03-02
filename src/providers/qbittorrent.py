@@ -213,6 +213,13 @@ class QBittorrentProvider(BaseProvider):
 
             if resp.status_code == 200:
                 version = resp.text.strip()
+                # Validate this is actually a qBittorrent version response
+                if not version.startswith("v") or len(version) > 20 or "<" in version:
+                    return HealthResult(
+                        status=HealthStatus.DOWN,
+                        message="Not a qBittorrent instance (unexpected response)",
+                        response_time_ms=elapsed_ms,
+                    )
                 self._qbit_version = version
                 # Detect v5.x for API compatibility
                 self._is_v5 = self._detect_v5(version)

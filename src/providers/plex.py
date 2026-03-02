@@ -89,8 +89,21 @@ class PlexProvider(BaseProvider):
                     response_time_ms=elapsed,
                 )
 
-            data = resp.json()
-            mc = data.get("MediaContainer", {})
+            try:
+                data = resp.json()
+            except Exception:
+                return HealthResult(
+                    status=HealthStatus.DOWN,
+                    message="Not a Plex instance (unexpected response)",
+                    response_time_ms=elapsed,
+                )
+            mc = data.get("MediaContainer")
+            if mc is None:
+                return HealthResult(
+                    status=HealthStatus.DOWN,
+                    message="Not a Plex instance (missing MediaContainer)",
+                    response_time_ms=elapsed,
+                )
             version = mc.get("version", "unknown")
             name = mc.get("friendlyName", "Plex")
 

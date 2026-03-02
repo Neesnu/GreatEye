@@ -179,8 +179,21 @@ class DockerProvider(BaseProvider):
                     response_time_ms=elapsed,
                 )
 
-            data = resp.json()
-            version = data.get("Version", "unknown")
+            try:
+                data = resp.json()
+            except Exception:
+                return HealthResult(
+                    status=HealthStatus.DOWN,
+                    message="Not a Docker instance (unexpected response)",
+                    response_time_ms=elapsed,
+                )
+            if "Version" not in data or "ApiVersion" not in data:
+                return HealthResult(
+                    status=HealthStatus.DOWN,
+                    message="Not a Docker instance (missing version fields)",
+                    response_time_ms=elapsed,
+                )
+            version = data["Version"]
 
             return HealthResult(
                 status=HealthStatus.UP,

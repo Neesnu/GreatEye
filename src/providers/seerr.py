@@ -103,8 +103,21 @@ class SeerrProvider(BaseProvider):
                     response_time_ms=elapsed,
                 )
 
-            data = resp.json()
-            version = data.get("version", "unknown")
+            try:
+                data = resp.json()
+            except Exception:
+                return HealthResult(
+                    status=HealthStatus.DOWN,
+                    message="Not a Seerr instance (unexpected response)",
+                    response_time_ms=elapsed,
+                )
+            if "version" not in data:
+                return HealthResult(
+                    status=HealthStatus.DOWN,
+                    message="Not a Seerr instance (missing version field)",
+                    response_time_ms=elapsed,
+                )
+            version = data["version"]
 
             if elapsed > 3000:
                 return HealthResult(
