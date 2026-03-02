@@ -25,7 +25,9 @@
                         <input type="checkbox" id="mi-select-all" checked
                                onchange="toggleAllImportFiles(this)">
                     </th>
-                    <th>File</th>
+                    <th class="arr-table__sortable" onclick="sortImportFiles()" title="Sort by filename">
+                        File <span id="mi-sort-icon">&#x25B2;</span>
+                    </th>
                     <th>Series</th>
                     <th>Episode</th>
                     <th>Quality</th>
@@ -35,7 +37,9 @@
             </thead>
             <tbody>
                 {% for file in files %}
-                <tr class="{% if file.has_rejections %}arr-table__row--error{% endif %}">
+                <tr class="{% if file.has_rejections %}arr-table__row--error{% endif %}"
+                    data-file-group="{{ loop.index0 }}"
+                    data-sort-key="{{ (file.relative_path or file.name) | lower }}">
                     <td>
                         <input type="checkbox" name="file_enabled_{{ loop.index0 }}"
                                value="1" checked class="mi-file-checkbox">
@@ -91,7 +95,7 @@
                     </td>
                 </tr>
                 {% if file.rejections %}
-                <tr class="arr-table__error-row">
+                <tr class="arr-table__error-row" data-file-group="{{ loop.index0 }}">
                     <td colspan="7" class="arr-table__error-msg">
                         {% for r in file.rejections %}
                             {{ r.reason }}{% if not loop.last %}; {% endif %}
@@ -100,7 +104,7 @@
                 </tr>
                 {% endif %}
                 {# Hidden fields carrying full quality/language JSON per file #}
-                <tr style="display: none;">
+                <tr style="display: none;" data-file-group="{{ loop.index0 }}">
                     <td colspan="7">
                         <input type="hidden" name="file_path_{{ loop.index0 }}" value="{{ file.path }}">
                         <input type="hidden" name="file_quality_{{ loop.index0 }}"
@@ -131,6 +135,24 @@
 function toggleAllImportFiles(checkbox) {
     document.querySelectorAll('.mi-file-checkbox').forEach(function(cb) {
         cb.checked = checkbox.checked;
+    });
+}
+
+var miSortAsc = true;
+function sortImportFiles() {
+    miSortAsc = !miSortAsc;
+    document.getElementById('mi-sort-icon').innerHTML = miSortAsc ? '&#x25B2;' : '&#x25BC;';
+    var tbody = document.querySelector('.manual-import__table tbody');
+    var rows = Array.from(tbody.querySelectorAll('tr[data-sort-key]'));
+    rows.sort(function(a, b) {
+        var ka = a.getAttribute('data-sort-key');
+        var kb = b.getAttribute('data-sort-key');
+        return miSortAsc ? ka.localeCompare(kb) : kb.localeCompare(ka);
+    });
+    rows.forEach(function(row) {
+        var group = row.getAttribute('data-file-group');
+        var siblings = tbody.querySelectorAll('tr[data-file-group="' + group + '"]');
+        siblings.forEach(function(r) { tbody.appendChild(r); });
     });
 }
 </script>

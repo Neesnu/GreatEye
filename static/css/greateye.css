@@ -1224,6 +1224,15 @@ a:hover {
     color: var(--color-warning);
 }
 
+.arr-table__sortable {
+    cursor: pointer;
+    user-select: none;
+}
+
+.arr-table__sortable:hover {
+    color: var(--text-primary);
+}
+
 /* ============================================================
    Prowlarr Styles
    ============================================================ */
