@@ -19,6 +19,7 @@ from src.models.role import Permission, Role, RolePermission
 from src.models.session import Session
 from src.models.user import User
 from src.providers.registry import registry
+from src.routes._helpers import add_sidebar_context
 from src.services.encryption import encrypt, decrypt
 
 logger = structlog.get_logger()
@@ -33,7 +34,7 @@ async def _render(request: Request, template: str, context: dict) -> HTMLRespons
     """Render full page or partial depending on HX-Request."""
     if request.headers.get("HX-Request"):
         return HTMLResponse(templates.get_template(template).render(context))
-    context["sidebar_instances"] = await registry.get_sidebar_instances()
+    await add_sidebar_context(context, context["user"])
     return templates.TemplateResponse(
         "base.html", {**context, "content_template": template}
     )

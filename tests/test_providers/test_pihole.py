@@ -3,7 +3,7 @@
 import pytest
 
 from tests.conftest import MockTransport, load_fixture
-from src.providers.pihole import PiholeProvider
+from src.providers.pihole import PiholeProvider, _is_blocking_enabled
 from src.providers.base import HealthStatus
 
 import httpx
@@ -82,6 +82,24 @@ class TestMeta:
 
 
 # ---------------------------------------------------------------------------
+# Blocking status normalization
+# ---------------------------------------------------------------------------
+
+class TestIsBlockingEnabled:
+    def test_string_enabled(self):
+        assert _is_blocking_enabled("enabled") is True
+
+    def test_string_disabled(self):
+        assert _is_blocking_enabled("disabled") is False
+
+    def test_bool_true(self):
+        assert _is_blocking_enabled(True) is True
+
+    def test_bool_false(self):
+        assert _is_blocking_enabled(False) is False
+
+
+# ---------------------------------------------------------------------------
 # Health Check
 # ---------------------------------------------------------------------------
 
@@ -94,7 +112,16 @@ class TestHealthCheck:
         assert "Blocking active" in result.message
 
     @pytest.mark.asyncio
-    async def test_blocking_disabled(self):
+    async def test_blocking_disabled_string(self):
+        responses = _default_responses()
+        responses["/api/dns/blocking"] = {"status": 200, "json": {"blocking": "disabled"}}
+        provider = _make_provider(responses)
+        result = await provider.health_check()
+        assert result.status == HealthStatus.DEGRADED
+        assert "disabled" in result.message.lower()
+
+    @pytest.mark.asyncio
+    async def test_blocking_disabled_bool(self):
         responses = _default_responses()
         responses["/api/dns/blocking"] = {"status": 200, "json": {"blocking": False}}
         provider = _make_provider(responses)
@@ -195,7 +222,15 @@ class TestSummary:
         assert result.data["queries"]["forwarded"] == 7748
 
     @pytest.mark.asyncio
-    async def test_blocking_disabled_summary(self):
+    async def test_blocking_disabled_summary_string(self):
+        responses = _default_responses()
+        responses["/api/dns/blocking"] = {"status": 200, "json": {"blocking": "disabled"}}
+        provider = _make_provider(responses)
+        result = await provider.get_summary()
+        assert result.data["blocking_enabled"] is False
+
+    @pytest.mark.asyncio
+    async def test_blocking_disabled_summary_bool(self):
         responses = _default_responses()
         responses["/api/dns/blocking"] = {"status": 200, "json": {"blocking": False}}
         provider = _make_provider(responses)

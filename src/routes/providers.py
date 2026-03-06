@@ -16,6 +16,7 @@ from fastapi.templating import Jinja2Templates
 from src.auth.dependencies import get_current_user, require_permission
 from src.models.user import User
 from src.providers.registry import registry
+from src.routes._helpers import add_sidebar_context
 from src.utils.formatting import format_bytes, format_speed, format_eta
 
 logger = structlog.get_logger()
@@ -88,7 +89,7 @@ async def provider_detail(
             templates.get_template(detail_template).render(context)
         )
 
-    context["sidebar_instances"] = await registry.get_sidebar_instances()
+    await add_sidebar_context(context, user)
     return templates.TemplateResponse(
         "pages/provider_detail.html",
         {**context, "detail_template": detail_template},

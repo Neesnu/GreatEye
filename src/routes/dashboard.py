@@ -17,6 +17,8 @@ from src.models.user import User
 from src.providers.cache import read_cache
 from src.providers.event_bus import Event, event_bus
 from src.providers.registry import registry
+from src.routes._helpers import add_sidebar_context
+from src.services.layout import get_ordered_instances, merge_with_available, parse_layout
 
 logger = structlog.get_logger()
 
@@ -42,8 +44,12 @@ async def dashboard(
         if session:
             delivery_mode = session.delivery_mode or "sse"
 
-    # Build card data for all instances the user can see
+    # Build card data for all instances the user can see, apply layout ordering
     instances = await _get_visible_instances(user)
+    layout = parse_layout(user.layout_json)
+    available_ids = [i["instance_id"] for i in instances]
+    layout = merge_with_available(layout, available_ids)
+    instances = get_ordered_instances(layout, instances)
 
     context = {
         "request": request,
@@ -57,7 +63,7 @@ async def dashboard(
             templates.get_template("partials/dashboard_content.html").render(context)
         )
 
-    context["sidebar_instances"] = await registry.get_sidebar_instances()
+    await add_sidebar_context(context, user)
     return templates.TemplateResponse("pages/dashboard.html", context)
 
 
@@ -68,6 +74,10 @@ async def dashboard_cards(
 ) -> HTMLResponse:
     """Return all summary cards as HTML (batch polling endpoint)."""
     instances = await _get_visible_instances(user)
+    layout = parse_layout(user.layout_json)
+    available_ids = [i["instance_id"] for i in instances]
+    layout = merge_with_available(layout, available_ids)
+    instances = get_ordered_instances(layout, instances)
     return templates.TemplateResponse("partials/dashboard_cards.html", {
         "request": request,
         "instances": instances,

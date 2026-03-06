@@ -22,6 +22,18 @@ from src.providers.base import (
 logger = structlog.get_logger()
 
 
+def _is_blocking_enabled(value: Any) -> bool:
+    """Normalize Pi-hole blocking value to bool.
+
+    Pi-hole v6 returns ``"enabled"``/``"disabled"`` strings, not booleans.
+    """
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.lower() == "enabled"
+    return bool(value)
+
+
 class PiholeProvider(BaseProvider):
     """Pi-hole v6 DNS blocking provider with session-based auth."""
 
@@ -154,7 +166,7 @@ class PiholeProvider(BaseProvider):
                     message="Not a Pi-hole instance (missing blocking field)",
                     response_time_ms=elapsed,
                 )
-            blocking = data.get("blocking", True)
+            blocking = _is_blocking_enabled(data.get("blocking", True))
 
             if elapsed > 3000:
                 return HealthResult(
@@ -238,7 +250,7 @@ class PiholeProvider(BaseProvider):
             # Parse blocking status
             blocking_enabled = True
             if not isinstance(blocking_resp, Exception) and blocking_resp.status_code == 200:
-                blocking_enabled = blocking_resp.json().get("blocking", True)
+                blocking_enabled = _is_blocking_enabled(blocking_resp.json().get("blocking", True))
 
             return SummaryResult(
                 data={
@@ -347,7 +359,8 @@ class PiholeProvider(BaseProvider):
             # Blocking
             blocking_enabled = None
             if not isinstance(blocking_resp, Exception) and blocking_resp.status_code == 200:
-                blocking_enabled = blocking_resp.json().get("blocking", None)
+                raw_blocking = blocking_resp.json().get("blocking")
+                blocking_enabled = _is_blocking_enabled(raw_blocking) if raw_blocking is not None else None
 
             # Version
             version: dict = {}

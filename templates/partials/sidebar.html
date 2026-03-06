@@ -6,7 +6,12 @@
         Dashboard
     </a>
 
-    {% if sidebar_instances is defined and sidebar_instances %}
+    {% if sidebar_groups is defined %}
+    {# Grouped sidebar (per-user layout) #}
+    <div class="sidebar__section-title">Providers</div>
+    {% include "partials/sidebar_groups.html" %}
+    {% elif sidebar_instances is defined and sidebar_instances %}
+    {# Flat fallback (no layout data) #}
     <div class="sidebar__section-title">Providers</div>
     {% for inst in sidebar_instances %}
     <a href="/providers/{{ inst.instance_id }}"

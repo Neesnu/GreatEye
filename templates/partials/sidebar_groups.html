@@ -1,0 +1,76 @@
+{# Sidebar grouped providers — rendered when sidebar_groups is available #}
+<div id="sidebar-groups-container">
+{% for group in sidebar_groups %}
+<div class="sidebar-group{% if group.collapsed %} sidebar-group--collapsed{% endif %}"
+     data-group-id="{{ group.id }}">
+    <div class="sidebar-group__header"
+         role="button"
+         tabindex="0"
+         aria-expanded="{{ 'false' if group.collapsed else 'true' }}"
+         onclick="window.LayoutManager && window.LayoutManager.toggleGroup(this)"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+        <span class="sidebar-group__chevron">&#9662;</span>
+        <span class="sidebar-group__name">{{ group.name }}</span>
+        <span class="sidebar-group__actions">
+            <button class="sidebar-group__action-btn"
+                    title="Rename group"
+                    onclick="event.stopPropagation(); window.LayoutManager && window.LayoutManager.renameGroup('{{ group.id }}', '{{ group.name }}')">&#9998;</button>
+            <button class="sidebar-group__action-btn"
+                    title="Delete group"
+                    onclick="event.stopPropagation(); window.LayoutManager && window.LayoutManager.deleteGroup('{{ group.id }}')">&#10005;</button>
+        </span>
+        <span class="sidebar-group__count">{{ group.instances | length }}</span>
+    </div>
+    <div class="sidebar-group__items" data-group-id="{{ group.id }}">
+        {% for inst in group.instances %}
+        <a href="/providers/{{ inst.instance_id }}"
+           class="sidebar__link"
+           data-instance-id="{{ inst.instance_id }}">
+            <span class="health-dot health-dot--{{ inst.health_status }}"
+                  title="{{ inst.health_message }}"
+                  aria-label="{{ inst.health_status }}"></span>
+            {{ inst.display_name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+{# Ungrouped providers #}
+{% if ungrouped_instances %}
+<div class="sidebar-group" data-group-id="ungrouped">
+    {% if sidebar_groups %}
+    <div class="sidebar-group__header"
+         role="button"
+         tabindex="0"
+         aria-expanded="true"
+         onclick="window.LayoutManager && window.LayoutManager.toggleGroup(this)"
+         onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">
+        <span class="sidebar-group__chevron">&#9662;</span>
+        <span class="sidebar-group__name">Ungrouped</span>
+        <span class="sidebar-group__count">{{ ungrouped_instances | length }}</span>
+    </div>
+    {% endif %}
+    <div class="sidebar-group__items" data-group-id="ungrouped">
+        {% for inst in ungrouped_instances %}
+        <a href="/providers/{{ inst.instance_id }}"
+           class="sidebar__link"
+           data-instance-id="{{ inst.instance_id }}">
+            <span class="health-dot health-dot--{{ inst.health_status }}"
+                  title="{{ inst.health_message }}"
+                  aria-label="{{ inst.health_status }}"></span>
+            {{ inst.display_name }}
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+</div>
+
+{# Add group button/form #}
+<div class="sidebar-add-group" id="sidebar-add-group">
+    <button class="sidebar-add-group__btn"
+            onclick="window.LayoutManager && window.LayoutManager.showAddGroup()">
+        + New Group
+    </button>
+</div>

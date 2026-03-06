@@ -6,6 +6,7 @@
     {% for instance in instances %}
     <div class="card card--{{ instance.health_status }}"
          id="card-{{ instance.instance_id }}"
+         data-instance-id="{{ instance.instance_id }}"
          sse-swap="summary:{{ instance.instance_id }}"
          hx-swap="innerHTML">
         {% include "partials/card_inner.html" %}

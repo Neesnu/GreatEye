@@ -1,3 +1,4 @@
 {
-    "blocking": true
+    "blocking": "enabled",
+    "timer": null
 }

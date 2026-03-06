@@ -13,9 +13,9 @@
             "createdAt": "2025-04-28T15:30:00.000Z",
             "media": {
                 "id": 101,
-                "title": "Dune: Part Three",
-                "status": 2,
-                "releaseDate": "2026-03-15"
+                "mediaType": "movie",
+                "tmdbId": 693134,
+                "status": 2
             },
             "requestedBy": {
                 "id": 1,
@@ -30,9 +30,9 @@
             "createdAt": "2025-04-27T10:00:00.000Z",
             "media": {
                 "id": 102,
-                "name": "The Bear",
-                "status": 3,
-                "releaseDate": "2022-06-23"
+                "mediaType": "tv",
+                "tmdbId": 136315,
+                "status": 3
             },
             "requestedBy": {
                 "id": 2,
@@ -47,9 +47,9 @@
             "createdAt": "2025-04-25T08:15:00.000Z",
             "media": {
                 "id": 103,
-                "title": "Oppenheimer",
-                "status": 5,
-                "releaseDate": "2023-07-21"
+                "mediaType": "movie",
+                "tmdbId": 872585,
+                "status": 5
             },
             "requestedBy": {
                 "id": 1,

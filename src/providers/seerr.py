@@ -142,6 +142,54 @@ class SeerrProvider(BaseProvider):
             return HealthResult(status=HealthStatus.DOWN, message=f"Error: {str(e)}")
 
     # ------------------------------------------------------------------
+    # Media title lookup
+    # ------------------------------------------------------------------
+
+    async def _fetch_media_titles(self, request_results: list[dict]) -> dict[int, dict]:
+        """Fetch titles for media items by tmdbId via /api/v1/movie or /api/v1/tv.
+
+        Returns a map of tmdbId -> {"title": str, "year": str}.
+        """
+        # Collect unique (tmdbId, mediaType) pairs
+        lookups: dict[int, str] = {}
+        for r in request_results:
+            media = r.get("media", {})
+            tmdb_id = media.get("tmdbId")
+            media_type = media.get("mediaType", r.get("type", ""))
+            if tmdb_id and tmdb_id not in lookups:
+                lookups[tmdb_id] = media_type
+
+        if not lookups:
+            return {}
+
+        async def _fetch_one(tmdb_id: int, media_type: str) -> tuple[int, dict]:
+            try:
+                endpoint = "tv" if media_type == "tv" else "movie"
+                resp = await self.http_client.get(f"/api/v1/{endpoint}/{tmdb_id}")
+                if resp.status_code == 200:
+                    data = resp.json()
+                    title = data.get("title", data.get("name", "Unknown"))
+                    release = data.get("releaseDate", data.get("firstAirDate", ""))
+                    year = release[:4] if release else ""
+                    return tmdb_id, {"title": title, "year": year}
+            except Exception:
+                pass
+            return tmdb_id, {"title": "Unknown", "year": ""}
+
+        results = await asyncio.gather(
+            *[_fetch_one(tid, mtype) for tid, mtype in lookups.items()],
+            return_exceptions=True,
+        )
+
+        title_map: dict[int, dict] = {}
+        for result in results:
+            if isinstance(result, Exception):
+                continue
+            tmdb_id, info = result
+            title_map[tmdb_id] = info
+        return title_map
+
+    # ------------------------------------------------------------------
     # Summary
     # ------------------------------------------------------------------
 
@@ -186,18 +234,23 @@ class SeerrProvider(BaseProvider):
                     "total": counts.get("total", 0),
                 }
 
-            # Parse recent requests
+            # Parse recent requests and fetch titles
             recent_requests: list[dict] = []
             if not isinstance(requests_resp, Exception) and requests_resp.status_code == 200:
                 req_data = requests_resp.json()
-                for r in req_data.get("results", [])[:5]:
+                raw_results = req_data.get("results", [])[:5]
+                title_map = await self._fetch_media_titles(raw_results)
+
+                for r in raw_results:
                     media = r.get("media", {})
+                    tmdb_id = media.get("tmdbId")
+                    media_info = title_map.get(tmdb_id, {}) if tmdb_id else {}
                     req_by = r.get("requestedBy", {})
                     recent_requests.append({
                         "id": r.get("id"),
                         "type": r.get("type", "unknown"),
-                        "media_title": media.get("title", media.get("name", "Unknown")),
-                        "media_year": media.get("releaseDate", "")[:4] if media.get("releaseDate") else "",
+                        "media_title": media_info.get("title", "Unknown"),
+                        "media_year": media_info.get("year", ""),
                         "status": REQUEST_STATUS_MAP.get(r.get("status", 0), "Unknown"),
                         "requested_by": req_by.get("displayName", req_by.get("username", "Unknown")),
                         "requested_at": r.get("createdAt", ""),
@@ -265,13 +318,18 @@ class SeerrProvider(BaseProvider):
             if not isinstance(requests_resp, Exception) and requests_resp.status_code == 200:
                 req_data = requests_resp.json()
                 total_records = req_data.get("pageInfo", {}).get("results", 0)
-                for r in req_data.get("results", []):
+                raw_results = req_data.get("results", [])
+                title_map = await self._fetch_media_titles(raw_results)
+
+                for r in raw_results:
                     media = r.get("media", {})
+                    tmdb_id = media.get("tmdbId")
+                    media_info = title_map.get(tmdb_id, {}) if tmdb_id else {}
                     req_by = r.get("requestedBy", {})
                     records.append({
                         "id": r.get("id"),
                         "type": r.get("type", "unknown"),
-                        "media_title": media.get("title", media.get("name", "Unknown")),
+                        "media_title": media_info.get("title", "Unknown"),
                         "request_status": REQUEST_STATUS_MAP.get(r.get("status", 0), "Unknown"),
                         "media_status": MEDIA_STATUS_MAP.get(media.get("status", 0), "Unknown"),
                         "requested_by": req_by.get("displayName", req_by.get("username", "Unknown")),

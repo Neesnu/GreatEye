@@ -1,6 +1,7 @@
 {% for instance in instances %}
 <div class="card card--{{ instance.health_status }}"
-     id="card-{{ instance.instance_id }}">
+     id="card-{{ instance.instance_id }}"
+     data-instance-id="{{ instance.instance_id }}">
     {% include "partials/card_inner.html" %}
 </div>
 {% endfor %}

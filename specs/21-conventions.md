@@ -73,7 +73,9 @@ greateye/
 │   │   └── greateye.css
 │   ├── js/
 │   │   ├── htmx.min.js
-│   │   └── htmx-sse.js
+│   │   ├── htmx-sse.js
+│   │   ├── sortable.min.js    # SortableJS (vendored, drag-and-drop)
+│   │   └── layout.js          # Sidebar group + card ordering DnD
 │   └── icons/
 ├── templates/
 │   ├── base.html

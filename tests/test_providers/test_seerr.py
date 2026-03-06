@@ -45,6 +45,16 @@ def _default_responses() -> dict:
         "/api/v1/request/1/decline": {"status": 200, "json": {}},
         "/api/v1/settings/radarr": {"status": 200, "json": settings_radarr},
         "/api/v1/settings/sonarr": {"status": 200, "json": settings_sonarr},
+        # Media detail lookups (titles come from these, not from /request)
+        "/api/v1/movie/693134": {"status": 200, "json": {
+            "id": 693134, "title": "Dune: Part Three", "releaseDate": "2026-03-15",
+        }},
+        "/api/v1/tv/136315": {"status": 200, "json": {
+            "id": 136315, "name": "The Bear", "firstAirDate": "2022-06-23",
+        }},
+        "/api/v1/movie/872585": {"status": 200, "json": {
+            "id": 872585, "title": "Oppenheimer", "releaseDate": "2023-07-21",
+        }},
     }
 
 

@@ -209,7 +209,19 @@ specs/
   20-hardening.md          # Security & operational hardening requirements
   21-conventions.md        # Code conventions, types, dependency versions, patterns
   22-build-plan.md         # Phased build sequence with context loading guide
+  23-user-layout.md        # Per-user layout customization (sidebar groups, card ordering)
 ```
+
+## UI Customization (Per-User Layout)
+- Per-user layout preferences stored as JSON blob on User model
+- Sidebar provider grouping: users create named groups, drag providers between groups
+- Dashboard card reordering via drag-and-drop (SortableJS, vendored)
+- Hide/show individual provider instances
+- Layout merged with available instances on render (prunes deleted, appends new)
+- Collapse/expand sidebar groups with persisted state
+- CSS: modern dark theme with card hover glow, glassmorphism sidebar/header, status-colored effects
+- API: 8 layout CRUD endpoints under /preferences/layout/*
+- Spec: specs/23-user-layout.md
 
 ## Deferred (Post-MVP)
 - Nginx Proxy Manager provider (cert expiry, proxy health)
