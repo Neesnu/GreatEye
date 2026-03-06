@@ -1,4 +1,19 @@
 <div class="toast toast--{{ toast_type | default('success') }}" role="alert">
+    <button class="toast__close" onclick="dismissToast(this)" aria-label="Dismiss">&times;</button>
     {{ message }}
-    <script>setTimeout(function(){ this.parentElement.remove(); }.bind(document.currentScript), 5000);</script>
+    <div class="toast__timer"></div>
+    <script>
+        (function(el) {
+            var toast = el.parentElement;
+            setTimeout(function() { dismissToast(toast.querySelector('.toast__close')); }, 5000);
+        })(document.currentScript);
+        if (!window.dismissToast) {
+            window.dismissToast = function(btn) {
+                var toast = btn.closest('.toast');
+                if (!toast || toast.classList.contains('toast--exit')) return;
+                toast.classList.add('toast--exit');
+                toast.addEventListener('animationend', function() { toast.remove(); });
+            };
+        }
+    </script>
 </div>

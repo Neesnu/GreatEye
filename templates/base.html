@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="/static/css/greateye.css">
     <script src="/static/js/htmx.min.js"></script>
     <script src="/static/js/htmx-sse.js"></script>
+    <script src="/static/js/sortable.min.js"></script>
+    <script src="/static/js/layout.js"></script>
 </head>
 <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -14,7 +16,8 @@
     <button class="sidebar-toggle"
             aria-label="Toggle navigation"
             aria-expanded="false"
-            onclick="document.querySelector('.sidebar').classList.toggle('sidebar--open'); this.setAttribute('aria-expanded', this.getAttribute('aria-expanded') === 'true' ? 'false' : 'true')">&#9776;</button>
+            onclick="toggleSidebar()">&#9776;</button>
+    <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
     <div class="app-layout">
         <!-- Sidebar -->
@@ -42,5 +45,32 @@
     </div>
 
     <div id="toast-container" role="status" aria-live="polite"></div>
+
+    <script>
+        /* HTMX loading bar */
+        document.body.addEventListener("htmx:beforeRequest", function() {
+            document.body.classList.add("htmx-request");
+        });
+        document.body.addEventListener("htmx:afterRequest", function() {
+            document.body.classList.remove("htmx-request");
+        });
+
+        /* Sidebar toggle + backdrop */
+        function toggleSidebar() {
+            var sidebar = document.querySelector(".sidebar");
+            var btn = document.querySelector(".sidebar-toggle");
+            var backdrop = document.querySelector(".sidebar-backdrop");
+            var isOpen = sidebar.classList.toggle("sidebar--open");
+            btn.setAttribute("aria-expanded", isOpen);
+            backdrop.classList.toggle("sidebar-backdrop--visible", isOpen);
+        }
+
+        /* Close sidebar on mobile nav click */
+        document.querySelector(".sidebar").addEventListener("click", function(e) {
+            if (window.innerWidth <= 768 && e.target.closest(".sidebar__link")) {
+                toggleSidebar();
+            }
+        });
+    </script>
 </body>
 </html>
